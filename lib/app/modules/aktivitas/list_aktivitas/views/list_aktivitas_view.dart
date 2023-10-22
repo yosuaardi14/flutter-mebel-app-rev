@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_card.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_drawer.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/add_aktivitas/bindings/add_aktivitas_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/add_aktivitas/views/add_aktivitas_view.dart';
 import 'package:flutter_mebel_app_rev/app/routes/app_pages.dart';
@@ -120,21 +121,18 @@ class ListAktivitasView extends GetView<ListAktivitasController> {
               Expanded(
                 child: GetBuilder<ListAktivitasController>(
                   init: controller,
-                  builder: (val) => ListView(
-                    children: controller.isLoading.value
-                        ? [
-                            const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          ]
-                        : [
-                            ...controller.data!.map(
-                              (val) => CustomCardAktivitas(
-                                aktivitas: val,
-                                onTap: () => onEditAktivitas(val["id"]),
-                              ),
-                            )
-                          ],
+                  builder: (val) => LoaderWidget(
+                    status: controller.status.value,
+                    child: ListView(
+                      children: [
+                        ...controller.data!.map(
+                          (val) => CustomCardAktivitas(
+                            aktivitas: val,
+                            onTap: () => onEditAktivitas(val["id"]),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -7,6 +7,7 @@ import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/modules/add_pesanan/controllers/add_pesanan_controller.dart';
 import 'package:flutter_mebel_app_rev/app/modules/add_pesanan/local_widgets/dialog_add_dokumentasi.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
 import 'package:image_picker/image_picker.dart';
 
 class FormDokumentasi extends StatefulWidget {

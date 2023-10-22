@@ -1,15 +1,15 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/aktivitas_service.dart';
-import 'package:flutter_mebel_app_rev/app/data/services/auth_service.dart';
-import 'package:flutter_mebel_app_rev/app/data/services/pesanan_service.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:get/get.dart';
 
 class ListAktivitasController extends GetxController {
   final AktivitasService service = AktivitasService();
-  final isLoading = false.obs;
+  final status = Rx<Status>(Status.none);
+  bool isError = false;
+
   final index = 0.obs;
   List<Map<String, dynamic>>? data = [];
   List<Map<String, dynamic>>? search = [];
@@ -22,16 +22,27 @@ class ListAktivitasController extends GetxController {
 
   void listData() async {
     log("list pesanan get data");
-    isLoading(true);
+    status(Status.loading);
     data = [];
     update();
-    await service.listData("all").then((value) {
-      data = value;
-    }).whenComplete(() {
-      isLoading(false);
+    try {
+      await service.listData("all").then((value) {
+        data = value;
+      });
+    } catch (e) {
+      isError = true;
+      showInfoDialog("Gagal", "Menampilkan Data $e");
+    } finally {
+      if (isError) {
+        status(Status.error);
+      } else {
+        if (data?.isEmpty ?? false) {
+          status(Status.empty);
+        } else {
+          status(Status.success);
+        }
+      }
       update();
-    }).catchError((error, stackTrace) {
-      showInfoDialog("Gagal", "Menampilkan Data $error");
-    });
+    }
   }
 }

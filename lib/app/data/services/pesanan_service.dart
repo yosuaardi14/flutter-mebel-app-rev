@@ -76,7 +76,7 @@ class PesananService {
     Map<String, dynamic>? detail = {};
     await collection.doc(id).get().then((value) async {
       detail = value.data();
-      log("Detail: " + detail.toString());
+      log("Detail: $detail");
     }).catchError((e) {
       throw (e);
     });
@@ -87,7 +87,7 @@ class PesananService {
     Map<String, dynamic>? detail = {};
     await collection.doc(id).get().then((value) async {
       detail = value.data();
-      log("Detail: " + detail.toString());
+      log("Detail: $detail");
       detail = await getDataBahanBaku(detail);
       detail = await getDataPekerja(detail);
     }).catchError((e) {

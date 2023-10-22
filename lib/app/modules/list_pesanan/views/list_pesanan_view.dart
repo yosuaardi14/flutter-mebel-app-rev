@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_card.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_drawer.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_tab.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/add_pesanan/bindings/add_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/add_pesanan/views/add_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/detail_pesanan/bindings/detail_pesanan_binding.dart';
@@ -39,25 +38,6 @@ class ListPesananView extends GetView<ListPesananController> {
 
   @override
   Widget build(BuildContext context) {
-    // List<Map<String, dynamic>> progress = [
-    //   {"tahap": "pengukuran", "waktu": 420, "persentase": 100},
-    //   {"tahap": "pengukuran", "waktu": 210, "persentase": 100},
-    //   {"tahap": "pengukuran", "waktu": 60, "persentase": 100},
-    //   {"tahap": "pemotongan", "waktu": 210, "persentase": 100},
-    //   {"tahap": "perakitan", "waktu": 60, "persentase": 100},
-    //   {"tahap": "pemasangan", "waktu": 60, "persentase": 100},
-    //   {"tahap": "pemasangan", "waktu": 60, "persentase": 50},
-    // ];
-    // log(getTanggalPerkiraanSelesaiTahap(progress, "14-01-2023").toString());
-    // log(getPresentaseProgressNew(progress).toString());
-    // log("Pengukuran: " +
-    //     getPresentaseProgressTahap(progress, "pengukuran").toString());
-    // log("Pemotongan: " +
-    //     getPresentaseProgressTahap(progress, "pemotongan").toString());
-    // log("Perakitan: " +
-    //     getPresentaseProgressTahap(progress, "perakitan").toString());
-    // log("Pemasangan: " +
-    //     getPresentaseProgressTahap(progress, "pemasangan").toString());
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -147,30 +127,27 @@ class ListPesananView extends GetView<ListPesananController> {
               Expanded(
                 child: GetBuilder<ListPesananController>(
                   init: controller,
-                  builder: (val) => ListView(
-                    children: controller.isLoading.value
-                        ? [
-                            const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          ]
-                        : controller.cari.text != ""
-                            ? [
-                                ...controller.search!.map(
-                                  (val) => CustomCardPesanan(
-                                    pesanan: val,
-                                    onTap: () => onDetailPesanan(val["id"]),
-                                  ),
-                                )
-                              ]
-                            : [
-                                ...controller.data!.map(
-                                  (val) => CustomCardPesanan(
-                                    pesanan: val,
-                                    onTap: () => onDetailPesanan(val["id"]),
-                                  ),
-                                )
-                              ],
+                  builder: (val) => LoaderWidget(
+                    status: controller.status.value,
+                    child: ListView(
+                      children: controller.cari.text != ""
+                          ? [
+                              ...controller.search!.map(
+                                (val) => CustomCardPesanan(
+                                  pesanan: val,
+                                  onTap: () => onDetailPesanan(val["id"]),
+                                ),
+                              )
+                            ]
+                          : [
+                              ...controller.data!.map(
+                                (val) => CustomCardPesanan(
+                                  pesanan: val,
+                                  onTap: () => onDetailPesanan(val["id"]),
+                                ),
+                              )
+                            ],
+                    ),
                   ),
                 ),
               ),

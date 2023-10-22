@@ -85,10 +85,9 @@ class CekPesananView extends GetView<CekPesananController> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: Text(
-                                        (val.detail!["foto"].length == 0
+                                        "${val.detail!["foto"].length == 0
                                                 ? "Belum Ada "
-                                                : "") +
-                                            "Foto",
+                                                : ""}Foto",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20),

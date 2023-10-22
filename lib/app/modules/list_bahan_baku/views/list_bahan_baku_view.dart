@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_card.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_drawer.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_tab.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/add_bahan_baku/views/add_bahan_baku_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/detail_bahan_baku/bindings/detail_bahan_baku_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/detail_bahan_baku/views/detail_bahan_baku_view.dart';
@@ -52,73 +53,71 @@ class ListBahanBakuView extends GetView<ListBahanBakuController> {
             onRefresh: () async {
               controller.listData();
             },
-            child: Column(mainAxisSize: MainAxisSize.max, children: [
-              GetBuilder<ListBahanBakuController>(
-                init: controller,
-                builder: (val) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CustomTab(
-                      label: "Semua",
-                      color: controller.index.value == 0
-                          ? Colors.red
-                          : Colors.grey,
-                      onTap: () {
-                        controller.index(0);
-                        controller.isAll(true);
-                        controller.listData();
-                      },
-                    ),
-                    CustomTab(
-                      label: "Kosong",
-                      color: controller.index.value == 1
-                          ? Colors.red
-                          : Colors.grey,
-                      onTap: () {
-                        controller.index(1);
-                        controller.isAll(false);
-                        controller.listData();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: FormBuilderTextField(
-                  controller: controller.cari,
-                  name: "cari",
-                  onChanged: (value) {
-                    controller.searchData();
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        controller.cari.text = "";
-                      },
-                      icon: const Icon(Icons.close),
-                    ),
-                    errorMaxLines: 2,
-                    border: const OutlineInputBorder(),
-                    isDense: true,
-                    hintText: "Cari",
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                GetBuilder<ListBahanBakuController>(
+                  init: controller,
+                  builder: (val) => Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CustomTab(
+                        label: "Semua",
+                        color: controller.index.value == 0
+                            ? Colors.red
+                            : Colors.grey,
+                        onTap: () {
+                          controller.index(0);
+                          controller.isAll(true);
+                          controller.listData();
+                        },
+                      ),
+                      CustomTab(
+                        label: "Kosong",
+                        color: controller.index.value == 1
+                            ? Colors.red
+                            : Colors.grey,
+                        onTap: () {
+                          controller.index(1);
+                          controller.isAll(false);
+                          controller.listData();
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 8,
-                child: GetBuilder<ListBahanBakuController>(
-                  init: controller,
-                  builder: (val) => ListView(
-                    children: controller.isLoading.value
-                        ? [
-                            const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          ]
-                        : controller.cari.text != ""
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: FormBuilderTextField(
+                    controller: controller.cari,
+                    name: "cari",
+                    onChanged: (value) {
+                      controller.searchData();
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          controller.cari.text = "";
+                        },
+                        icon: const Icon(Icons.close),
+                      ),
+                      errorMaxLines: 2,
+                      border: const OutlineInputBorder(),
+                      isDense: true,
+                      hintText: "Cari",
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 8,
+                  child: GetBuilder<ListBahanBakuController>(
+                    init: controller,
+                    builder: (val) => LoaderWidget(
+                      status: controller.status.value,
+                      child: ListView(
+                        children: controller.cari.text != ""
                             ? [
                                 ...controller.search!.map(
                                   (val) => CustomCardBahanBaku(
@@ -135,10 +134,12 @@ class ListBahanBakuView extends GetView<ListBahanBakuController> {
                                   ),
                                 )
                               ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -180,7 +180,7 @@ String? initValProgress(
 // }
 
 String? initValProgressTahap(int? index, List<Map<String, dynamic>>? data) {
-  List<String> tahap = ["pengukuran", "pemotongan", "perakitan", "pemasangan"];
+  // List<String> tahap = ["pengukuran", "pemotongan", "perakitan", "pemasangan"];
   // if (index == null && data != null) {
   //   return tahap[data.length];
   // } else
@@ -196,7 +196,7 @@ String? initValBahanBaku(
   dynamic val, temp;
   if (data != null && id != null) {
     temp = data.firstWhere((element) => element["id"] == id)["nama"];
-    log("value:" + temp);
+    // log("value:" + temp);
   }
   if (temp != String && temp != null) {
     val = temp.toString();
