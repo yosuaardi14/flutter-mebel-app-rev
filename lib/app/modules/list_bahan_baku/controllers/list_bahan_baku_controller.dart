@@ -3,11 +3,14 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/bahan_baku_service.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:get/get.dart';
 
 class ListBahanBakuController extends GetxController {
   final BahanBakuService service = BahanBakuService();
-  final isLoading = false.obs;
+  // final isLoading = false.obs;
+  final status = Rx<Status>(Status.none);
+  bool isError = false;
   final isAll = true.obs;
   final index = 0.obs;
   TextEditingController cari = TextEditingController(text: "");
@@ -22,18 +25,28 @@ class ListBahanBakuController extends GetxController {
 
   void listData() async {
     log("list bahan baku get data");
-    isLoading(true);
+    log("list user get data");
+    status(Status.loading);
     data = [];
     cari.text = "";
     update();
-    data = await service.listData(isAll.value).catchError((error, stackTrace) {
-      showInfoDialog("Gagal", "Menampilkan Data $error");
-    });
-    // data!.sort((a, b) {
-    //   return a["stok"].compareTo(b["stok"]);
-    // });
-    isLoading(false);
-    update();
+    try {
+      data = await service.listData(isAll.value);
+    } catch (e) {
+      isError = true;
+      showInfoDialog("Gagal", "Menampilkan Data $e");
+    } finally {
+      if (isError) {
+        status(Status.error);
+      } else {
+        if (data?.isEmpty ?? false) {
+          status(Status.empty);
+        } else {
+          status(Status.success);
+        }
+      }
+      update();
+    }
   }
 
   void searchData() {

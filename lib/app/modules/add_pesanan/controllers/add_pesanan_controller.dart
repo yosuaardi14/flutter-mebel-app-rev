@@ -80,7 +80,7 @@ class AddPesananController extends GetxController {
             String userid =
                 await userService.findDuplicate("nohp", pemesan["nohp"]);
             if (userid == "") {
-              log("ID:" + userid.toString());
+              log("ID:$userid");
               pemesan["id"] =
                   await userService.addNewPembeli(pemesan).then((value) {
                 newPembeli = false;

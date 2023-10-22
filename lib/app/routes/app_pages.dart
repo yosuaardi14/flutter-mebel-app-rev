@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/add_aktivitas/bindings/add_aktivitas_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/add_aktivitas/views/add_aktivitas_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/list_aktivitas/bindings/list_aktivitas_binding.dart';
@@ -49,47 +51,47 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.LIST_BAHAN_BAKU,
-      page: () => ListBahanBakuView(),
+      page: () => const ListBahanBakuView(),
       binding: ListBahanBakuBinding(),
     ),
     GetPage(
       name: _Paths.LIST_USER,
-      page: () => ListUserView(),
+      page: () => const ListUserView(),
       binding: ListUserBinding(),
     ),
     GetPage(
       name: _Paths.DETAIL_BAHAN_BAKU,
-      page: () => DetailBahanBakuView(),
+      page: () => const DetailBahanBakuView(),
       binding: DetailBahanBakuBinding(),
     ),
     GetPage(
       name: _Paths.ADD_BAHAN_BAKU,
-      page: () => AddBahanBakuView(),
+      page: () => const AddBahanBakuView(),
       binding: AddBahanBakuBinding(),
     ),
     GetPage(
       name: _Paths.ADD_USER,
-      page: () => AddUserView(),
+      page: () => const AddUserView(),
       binding: AddUserBinding(),
     ),
     GetPage(
       name: _Paths.DETAIL_USER,
-      page: () => DetailUserView(),
+      page: () => const DetailUserView(),
       binding: DetailUserBinding(),
     ),
     GetPage(
       name: _Paths.ADD_PESANAN,
-      page: () => AddPesananView(),
+      page: () => const AddPesananView(),
       binding: AddPesananBinding(),
     ),
     GetPage(
       name: _Paths.DETAIL_PESANAN,
-      page: () => DetailPesananView(),
+      page: () => const DetailPesananView(),
       binding: DetailPesananBinding(),
     ),
     GetPage(
       name: _Paths.LIST_PESANAN,
-      page: () => ListPesananView(),
+      page: () => const ListPesananView(),
       binding: ListPesananBinding(),
     ),
     GetPage(
@@ -99,12 +101,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ADD_ACTIVITY,
-      page: () => AddAktivitasView(),
+      page: () => const AddAktivitasView(),
       binding: AddAktivitasBinding(),
     ),
     GetPage(
       name: _Paths.LIST_ACTIVITY,
-      page: () => ListAktivitasView(),
+      page: () => const ListAktivitasView(),
       binding: ListAktivitasBinding(),
     ),
   ];

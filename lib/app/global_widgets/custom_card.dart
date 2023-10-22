@@ -39,20 +39,17 @@ class CustomCardPesanan extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Pesan: " +
-                      (pesanan["info"]?["tanggalPesan"].toString() ?? "")),
+                  Text("Pesan: ${pesanan["info"]?["tanggalPesan"].toString() ?? ""}"),
                   selesai
                       ? Text(
-                          "Selesai: " +
-                              (pesanan["info"]?["tanggalSelesai"].toString() ??
-                                  ""),
+                          "Selesai: ${pesanan["info"]?["tanggalSelesai"].toString() ??
+                                  ""}",
                           style: const TextStyle(color: Colors.green),
                         )
                       : Text(
-                          "Deadline: " +
-                              (pesanan["info"]?["perkiraanSelesai"]
+                          "Deadline: ${pesanan["info"]?["perkiraanSelesai"]
                                       .toString() ??
-                                  ""),
+                                  ""}",
                           style: TextStyle(
                               color: getTextColor((pesanan["info"]
                                       ?["perkiraanSelesai"])

@@ -26,7 +26,7 @@ class HistoriBahanBaku extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Histori " + (plus ? "Penambahan" : "Penggunaan"),
+            Text("Histori ${plus ? "Penambahan" : "Penggunaan"}",
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 10),

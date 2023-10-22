@@ -11,9 +11,9 @@ class PemesanCard extends StatelessWidget {
 
   Future<void> launchWa() async {
     var nohp = data["nohp"];
-    Uri _url = Uri.parse('https://wa.me/$nohp/');
-    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
-      throw 'Could not launch $_url';
+    Uri url = Uri.parse('https://wa.me/$nohp/');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
     }
   }
 

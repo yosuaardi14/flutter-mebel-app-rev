@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_card.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_drawer.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_tab.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/add_user/views/add_user_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/detail_user/bindings/detail_user_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/detail_user/views/detail_user_view.dart';
@@ -51,73 +52,71 @@ class ListUserView extends GetView<ListUserController> {
             onRefresh: () async {
               controller.listData();
             },
-            child: Column(mainAxisSize: MainAxisSize.max, children: [
-              GetBuilder<ListUserController>(
-                init: controller,
-                builder: (val) => Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    CustomTab(
-                      label: "Semua",
-                      color: controller.index.value == 0
-                          ? Colors.red
-                          : Colors.grey,
-                      onTap: () {
-                        controller.index(0);
-                        controller.isAll(true);
-                        controller.listData();
-                      },
-                    ),
-                    CustomTab(
-                      label: "Pekerja",
-                      color: controller.index.value == 1
-                          ? Colors.red
-                          : Colors.grey,
-                      onTap: () {
-                        controller.index(1);
-                        controller.isAll(false);
-                        controller.listData();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: FormBuilderTextField(
-                  controller: controller.cari,
-                  name: "cari",
-                  onChanged: (value) {
-                    controller.searchData();
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        controller.cari.text = "";
-                      },
-                      icon: const Icon(Icons.close),
-                    ),
-                    border: const OutlineInputBorder(),
-                    isDense: true,
-                    hintText: "Cari",
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                GetBuilder<ListUserController>(
+                  init: controller,
+                  builder: (val) => Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      CustomTab(
+                        label: "Semua",
+                        color: controller.index.value == 0
+                            ? Colors.red
+                            : Colors.grey,
+                        onTap: () {
+                          controller.index(0);
+                          controller.isAll(true);
+                          controller.listData();
+                        },
+                      ),
+                      CustomTab(
+                        label: "Pekerja",
+                        color: controller.index.value == 1
+                            ? Colors.red
+                            : Colors.grey,
+                        onTap: () {
+                          controller.index(1);
+                          controller.isAll(false);
+                          controller.listData();
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                child: GetBuilder<ListUserController>(
-                  init: controller,
-                  builder: (val) => ListView(
-                    shrinkWrap: true,
-                    clipBehavior: Clip.antiAlias,
-                    children: controller.isLoading.value
-                        ? [
-                            const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          ]
-                        : controller.cari.text != ""
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: FormBuilderTextField(
+                    controller: controller.cari,
+                    name: "cari",
+                    onChanged: (value) {
+                      controller.searchData();
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          controller.cari.text = "";
+                        },
+                        icon: const Icon(Icons.close),
+                      ),
+                      border: const OutlineInputBorder(),
+                      isDense: true,
+                      hintText: "Cari",
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GetBuilder<ListUserController>(
+                    init: controller,
+                    builder: (val) => LoaderWidget(
+                      status: controller.status.value,
+                      child: ListView(
+                        shrinkWrap: true,
+                        clipBehavior: Clip.antiAlias,
+                        children: controller.cari.text != ""
                             ? [
                                 ...controller.search!.map(
                                   (val) => CustomCardUser(
@@ -134,10 +133,12 @@ class ListUserView extends GetView<ListUserController> {
                                   ),
                                 )
                               ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
           ),
         ),
       ),

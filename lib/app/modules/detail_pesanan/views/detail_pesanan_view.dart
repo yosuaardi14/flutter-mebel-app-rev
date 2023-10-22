@@ -133,10 +133,9 @@ class DetailPesananView extends GetView<DetailPesananController> {
                                   padding: const EdgeInsets.all(10.0),
                                   child: Center(
                                     child: Text(
-                                      (val.detail!["foto"].length == 0
+                                      "${val.detail!["foto"].length == 0
                                               ? "Belum Ada "
-                                              : "") +
-                                          "Foto",
+                                              : ""}Foto",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20),

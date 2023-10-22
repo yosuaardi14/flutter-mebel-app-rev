@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/user_service.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:get/get.dart';
 
 class ListUserController extends GetxController {
   final UserService service = UserService();
-  final isLoading = false.obs;
+  final status = Rx<Status>(Status.none);
+  bool isError = false;
   final isAll = true.obs;
   final index = 0.obs;
 
@@ -23,16 +25,27 @@ class ListUserController extends GetxController {
 
   void listData() async {
     log("list user get data");
-    isLoading(true);
+    status(Status.loading);
     data = [];
     cari.text = "";
     update();
-    data = await service.listData(isAll.value).whenComplete(() {
-      isLoading(false);
+    try {
+      data = await service.listData(isAll.value);
+    } catch (e) {
+      isError = true;
+      showInfoDialog("Gagal", "Menampilkan Data $e");
+    } finally {
+      if (isError) {
+        status(Status.error);
+      } else {
+        if (data?.isEmpty ?? false) {
+          status(Status.empty);
+        } else {
+          status(Status.success);
+        }
+      }
       update();
-    }).catchError((error, stackTrace) {
-      showInfoDialog("Gagal", "Menampilkan Data $error");
-    });
+    }
   }
 
   void searchData() {
