@@ -5,11 +5,10 @@ import 'package:flutter_mebel_app_rev/app/global_widgets/custom_drawer.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/add_aktivitas/bindings/add_aktivitas_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/add_aktivitas/views/add_aktivitas_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/aktivitas/list_aktivitas/controllers/list_aktivitas_controller.dart';
 import 'package:flutter_mebel_app_rev/app/routes/app_pages.dart';
 
 import 'package:get/get.dart';
-
-import '../controllers/list_aktivitas_controller.dart';
 
 class ListAktivitasView extends GetView<ListAktivitasController> {
   const ListAktivitasView({Key? key}) : super(key: key);
