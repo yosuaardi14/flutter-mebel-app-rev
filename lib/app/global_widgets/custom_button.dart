@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   final String label;
   final void Function()? onPressed;
-  const CustomButton({Key? key, required this.label, this.onPressed})
-      : super(key: key);
+  const CustomButton({super.key, required this.label, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +12,11 @@ class CustomButton extends StatelessWidget {
       width: mediaQuery.size.width * 0.9,
       height: 50,
       child: ElevatedButton(
+        onPressed: onPressed,
         child: Text(
           label,
           style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: onPressed,
       ),
     );
   }

@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_button.dart';
-import 'package:flutter_mebel_app_rev/app/modules/login/bindings/login_binding.dart';
-import 'package:flutter_mebel_app_rev/app/modules/login/views/login_view.dart';
-import 'package:flutter_mebel_app_rev/app/routes/app_pages.dart';
+import 'package:flutter_mebel_app_rev/app/modules/home/controllers/home_controller.dart';
 
-import 'package:get/get.dart';
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-import '../controllers/home_controller.dart';
+  @override
+  State<HomePage> createState() => HomeController();
+}
 
-class HomeView extends GetView<HomeController> {
-  const HomeView({Key? key}) : super(key: key);
-
-  void onLogin() {
-    Get.toNamed(Routes.LOGIN);
-  }
-
-  void onLoginPembeli() {
-    Get.to(() => LoginView(isPembeli: true), binding: LoginBinding());
-  }
-
-  void onCekPesanan() {
-    Get.toNamed(Routes.CEK_PESANAN);
-  }
+class HomeView extends StatelessWidget {
+  final HomeController state;
+  const HomeView({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +25,20 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButton(label: "MASUK", onPressed: onLogin),
+              CustomButton(
+                label: "MASUK",
+                onPressed: state.onLogin,
+              ),
               const SizedBox(height: 20),
               CustomButton(
-                  label: "MASUK SEBAGAI PEMBELI", onPressed: onLoginPembeli),
+                label: "MASUK SEBAGAI PEMBELI",
+                onPressed: state.onLoginPembeli,
+              ),
               const SizedBox(height: 20),
-              CustomButton(label: "CEK PESANAN", onPressed: onCekPesanan),
+              CustomButton(
+                label: "CEK PESANAN",
+                onPressed: state.onCekPesanan,
+              ),
             ],
           ),
         ),

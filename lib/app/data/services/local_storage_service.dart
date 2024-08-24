@@ -3,6 +3,10 @@ import 'package:get_secure_storage/get_secure_storage.dart';
 class LocalStorageService {
   static const container = "FlutterMebelApp";
 
+  static Future<bool> initStorage() async {
+    return await GetSecureStorage.init(container: container);
+  }
+
   static Future<void> writeData(String key, dynamic value) async {
     final storage = GetSecureStorage(container: container);
     await storage.write(key, value);
