@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mebel_app_rev/app/modules/detail_pesanan/local_widgets/info_card.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/local_widgets/info_card.dart';
 
 class PemesanCard extends StatelessWidget {
   final String title;

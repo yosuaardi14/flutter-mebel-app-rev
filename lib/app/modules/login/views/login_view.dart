@@ -8,11 +8,11 @@ import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_form_field.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/password_form_field.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_mebel_app_rev/app/modules/login/controllers/login_controller.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 import 'package:get/get.dart';
 
-import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
   bool isPembeli = false;

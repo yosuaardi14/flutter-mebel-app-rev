@@ -7,6 +7,22 @@ import 'package:flutter_mebel_app_rev/app/modules/aktivitas/list_aktivitas/views
 import 'package:flutter_mebel_app_rev/app/modules/auth/views/login_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/bindings/cek_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/views/cek_pesanan_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/home/bindings/home_binding.dart';
+import 'package:flutter_mebel_app_rev/app/modules/home/views/home_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/login/bindings/login_binding.dart';
+import 'package:flutter_mebel_app_rev/app/modules/login/views/login_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/bindings/add_pesanan_binding.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/views/add_pesanan_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/bindings/detail_pesanan_binding.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/views/detail_pesanan_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/list_pesanan/bindings/list_pesanan_binding.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/list_pesanan/views/list_pesanan_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/user/add_user/bindings/add_user_binding.dart';
+import 'package:flutter_mebel_app_rev/app/modules/user/add_user/views/add_user_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/user/detail_user/bindings/detail_user_binding.dart';
+import 'package:flutter_mebel_app_rev/app/modules/user/detail_user/views/detail_user_view.dart';
+import 'package:flutter_mebel_app_rev/app/modules/user/list_user/bindings/list_user_binding.dart';
+import 'package:flutter_mebel_app_rev/app/modules/user/list_user/views/list_user_view.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_mebel_app_rev/app/modules/add_bahan_baku/bindings/add_bahan_baku_binding.dart';

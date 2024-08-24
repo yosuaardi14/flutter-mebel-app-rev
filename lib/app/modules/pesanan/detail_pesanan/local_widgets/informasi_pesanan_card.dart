@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
-import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/local_widgets/info_card.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/local_widgets/info_card.dart';
 
 class InformasiPesananCard extends StatelessWidget {
   final String title;
@@ -26,12 +26,14 @@ class InformasiPesananCard extends StatelessWidget {
             child: Column(
               children: [
                 InfoCard(label: "nama", value: data["nama"]),
-                InfoCard(label: "harga", value: convertToIdr(data["harga"])),
+                InfoCard(
+                    label: "harga", value: convertToIdr(data["harga"] ?? 0)),
                 InfoCard(
                     label: "statusPembayaran", value: data["statusPembayaran"]),
                 if (data["statusPembayaran"] == "dp")
                   InfoCard(
-                      label: "dpharga", value: convertToIdr(data["dpharga"])),
+                      label: "dpharga",
+                      value: convertToIdr(data["dpharga"] ?? 0)),
                 InfoCard(label: "tanggalPesan", value: data["tanggalPesan"]),
                 InfoCard(
                     label: "perkiraanSelesai", value: data["perkiraanSelesai"]),

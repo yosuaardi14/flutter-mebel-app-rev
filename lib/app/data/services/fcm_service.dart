@@ -5,9 +5,8 @@ import 'package:get/get_connect/connect.dart';
 
 class FCMService extends GetConnect {
   final String url = "https://fcm.googleapis.com/fcm/send";
-  final String apiKey = "AIzaSyC5cICBq6C_R-gMFMXu04HkqMfcjtTz_Hw";
-  final String serverKey =
-      "AAAACyRavEA:APA91bHpc62yxHQ8w2-qv7Q7AW3gTncF0d4cfO1UWjrddm_IgrOyb58r1DE1pr5PCsW2FWhCxTyU5w6sYnvpS8uO7HWhigt9bXDPu3Wvr9rJTUiWtT2zS9WnlOyQgq6nTPMlfadeK0Jf";
+  final String apiKey = "";
+  final String serverKey = "";
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   @override
