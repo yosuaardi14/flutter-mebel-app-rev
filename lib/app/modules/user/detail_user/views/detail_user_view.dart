@@ -1,31 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_tab.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/detail_card.dart';
-import 'package:flutter_mebel_app_rev/app/modules/user/add_user/bindings/add_user_binding.dart';
-import 'package:flutter_mebel_app_rev/app/modules/user/add_user/views/add_user_view.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/user/detail_user/controllers/detail_user_controller.dart';
 
-import 'package:get/get.dart';
-
-
-class DetailUserView extends GetView<DetailUserController> {
+class DetailUserPage extends StatefulWidget {
   final String? id;
-  const DetailUserView({Key? key, this.id}) : super(key: key);
+  const DetailUserPage({super.key, this.id});
 
-  void onEditUser(String id) async {
-    await Get.to(() => AddUserView(id: id), binding: AddUserBinding())
-        ?.then((_) {
-      controller.getData(id);
-    });
-  }
+  @override
+  State<DetailUserPage> createState() => DetailUserController();
+}
 
-  void onDeleteUser(BuildContext context) async {
-    bool hasil = await showConfirmationDeleteDialog(context);
-    if (hasil) {
-      controller.deleteData(controller.detail!["id"]);
-    }
-  }
+class DetailUserView extends StatelessWidget {
+  final DetailUserController state;
+  const DetailUserView({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -39,44 +28,56 @@ class DetailUserView extends GetView<DetailUserController> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: RefreshIndicator(
-              onRefresh: () async => controller.getData(id!),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Expanded(
-                  child: GetBuilder<DetailUserController>(
-                    init: controller..getData(id!),
-                    builder: (val) => ListView(
-                      children: val.isLoading.value
-                          ? [const Center(child: CircularProgressIndicator())]
-                          : [
+              onRefresh: () async => state.getData(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: LoaderBooleanNotifierWidget(
+                      isLoading: state.isLoading,
+                      child: ValueListenableBuilder(
+                        valueListenable: state.detail,
+                        builder: (context, detail, child) {
+                          return ListView(
+                            children: [
                               DetailCard(
-                                  label: "Nama Lengkap",
-                                  value: val.detail!["nama"]),
+                                label: "Nama Lengkap",
+                                value: detail?["nama"],
+                              ),
                               DetailCard(
-                                  label: "No HP", value: val.detail!["nohp"]),
+                                label: "No HP",
+                                value: detail?["nohp"],
+                              ),
                               DetailCard(
-                                  label: "Role", value: val.detail!["role"]),
+                                label: "Role",
+                                value: detail?["role"],
+                              ),
                               DetailCard(
-                                  label: "Alamat",
-                                  value: val.detail!["alamat"]),
+                                label: "Alamat",
+                                value: detail?["alamat"],
+                              ),
                             ],
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                Row(
-                  children: [
-                    CustomTab(
-                      label: "Ubah",
-                      color: Colors.green,
-                      onTap: () => onEditUser(controller.detail!["id"]),
-                    ),
-                    CustomTab(
-                      label: "Hapus",
-                      color: Colors.red,
-                      onTap: () => onDeleteUser(context),
-                    ),
-                  ],
-                ),
-              ]),
+                  Row(
+                    children: [
+                      CustomTab(
+                        label: "Ubah",
+                        color: Colors.green,
+                        onTap: () => state.onEditUser(state.id!),
+                      ),
+                      CustomTab(
+                        label: "Hapus",
+                        color: Colors.red,
+                        onTap: state.onDeleteUser,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

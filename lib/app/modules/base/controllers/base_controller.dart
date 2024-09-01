@@ -9,6 +9,15 @@ abstract class BaseController<T extends StatefulWidget> extends State<T> {
   MediaQueryData get mediaQuery => MediaQuery.of(context);
   ModalRoute? get modalRoute => ModalRoute.of(context);
 
+  void back() {
+    Navigator.pop(context);
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+  }
+
   Future<T?> openDialog<T>({
     required Widget dialog,
     bool barrierDismissible = true,

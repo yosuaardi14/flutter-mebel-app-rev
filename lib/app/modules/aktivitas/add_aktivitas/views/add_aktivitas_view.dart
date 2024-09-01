@@ -49,9 +49,7 @@ class AddAktivitasView extends StatelessWidget {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () async {
-                            state.simpan(context);
-                          },
+                          onPressed: state.simpan,
                           child: const Text("SIMPAN"),
                         ),
                       ],

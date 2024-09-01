@@ -18,11 +18,8 @@ import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/binding
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/views/detail_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/list_pesanan/bindings/list_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/list_pesanan/views/list_pesanan_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/user/add_user/bindings/add_user_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/user/add_user/views/add_user_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/user/detail_user/bindings/detail_user_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/user/detail_user/views/detail_user_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/user/list_user/bindings/list_user_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/user/list_user/views/list_user_view.dart';
 import 'package:get/get.dart';
 
@@ -58,8 +55,8 @@ class AppPages {
     ),
     GetPage(
       name: Routes.LIST_USER,
-      page: () => const ListUserView(),
-      binding: ListUserBinding(),
+      page: () => const ListUserPage(),
+      // binding: ListUserBinding(),
     ),
     GetPage(
       name: Routes.DETAIL_BAHAN_BAKU,
@@ -73,13 +70,13 @@ class AppPages {
     ),
     GetPage(
       name: Routes.ADD_USER,
-      page: () => const AddUserView(),
-      binding: AddUserBinding(),
+      page: () => const AddUserPage(),
+      // binding: AddUserBinding(),
     ),
     GetPage(
       name: Routes.DETAIL_USER,
-      page: () => const DetailUserView(),
-      binding: DetailUserBinding(),
+      page: () => const DetailUserPage(),
+      // binding: DetailUserBinding(),
     ),
     GetPage(
       name: Routes.ADD_PESANAN,

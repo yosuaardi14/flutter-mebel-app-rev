@@ -23,7 +23,7 @@ class AddAktivitasController extends BaseController<AddAktivitasPage> {
 
   get formKey => _formKey;
 
-  void simpan(BuildContext context) async {
+  void simpan() async {
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
       Future<bool> hasil = id == null
@@ -40,7 +40,6 @@ class AddAktivitasController extends BaseController<AddAktivitasPage> {
 
   void simpanData(String? id, Map<String, dynamic> data) {
     showOverlay.value = true;
-    // update();
     if (id == null) {
       tambahData(data);
     } else {
