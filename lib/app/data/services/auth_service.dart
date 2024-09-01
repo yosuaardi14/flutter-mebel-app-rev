@@ -127,7 +127,7 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    unsubscribeTopic();
+    // unsubscribeTopic();
     // final prefs = await SharedPreferences.getInstance();
     // prefs.clear();
     await LocalStorageService.removeALl();

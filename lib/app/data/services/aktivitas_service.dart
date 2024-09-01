@@ -1,14 +1,18 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_mebel_app_rev/app/data/services/base_firestore_service.dart';
 
-class AktivitasService {
-  static final AktivitasService _instance = AktivitasService._internal();
+class AktivitasService extends BaseFirestoreService {
+  static AktivitasService? _instance;
+
+  // Private constructor that calls the base class constructor
+  AktivitasService._internal() : super.internal("aktivitas");
+
+  // Factory constructor for the extended class
   factory AktivitasService() {
-    return _instance;
+    _instance ??= AktivitasService._internal();
+    return _instance!;
   }
-  AktivitasService._internal();
-
-  final collection = FirebaseFirestore.instance.collection('aktivitas');
 
   Future<List<Map<String, dynamic>>?> listData([String tahap = ""]) async {
     List<Map<String, dynamic>> data = [];

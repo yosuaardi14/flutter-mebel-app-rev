@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/themes/app_theme.dart';
+import 'package:flutter_mebel_app_rev/app/data/services/auth_service.dart';
 import 'package:flutter_mebel_app_rev/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
@@ -11,7 +12,9 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       title: "Mebel App",
       theme: AppTheme.themeData,
-      initialRoute: AppPages.INITIAL,
+      initialRoute: AuthService.userData.isEmpty
+          ? AppPages.INITIAL
+          : Routes.LIST_BAHAN_BAKU,
       getPages: AppPages.routes,
     );
   }

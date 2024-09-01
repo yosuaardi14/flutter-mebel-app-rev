@@ -1,16 +1,19 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_mebel_app_rev/app/data/services/base_firestore_service.dart';
 
-class BahanBakuService {
-  static final BahanBakuService _instance = BahanBakuService._internal();
+class BahanBakuService extends BaseFirestoreService {
+  static BahanBakuService? _instance;
+
+  // Private constructor that calls the base class constructor
+  BahanBakuService._internal() : super.internal("bahan-baku-testing");
+
+  // Factory constructor for the extended class
   factory BahanBakuService() {
-    return _instance;
+    _instance ??= BahanBakuService._internal();
+    return _instance!;
   }
-  BahanBakuService._internal();
-
-  final collection =
-      FirebaseFirestore.instance.collection('bahan-baku-testing');
 
   Future<List<Map<String, dynamic>>?> listData([bool isAll = true]) async {
     List<Map<String, dynamic>> data = [];

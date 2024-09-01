@@ -117,7 +117,7 @@ class CekPesananView extends GetView<CekPesananController> {
                 ),
               ),
               SizedBox(
-                width: mediaQuery.width * 0.95,
+                width: mediaQuery.width,
                 height: 35,
                 child: ElevatedButton(
                   onPressed: () {

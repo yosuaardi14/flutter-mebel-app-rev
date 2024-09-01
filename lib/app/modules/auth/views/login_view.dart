@@ -5,6 +5,7 @@ import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_form_field.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/password_form_field.dart';
 import 'package:flutter_mebel_app_rev/app/modules/auth/controllers/login_controller.dart';
+import 'package:flutter_mebel_app_rev/app/modules/base/views/base_view.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,10 +22,11 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     state.isPembeli = state.modalRoute?.settings.arguments == true;
-    return SafeArea(
+    return BaseView(
+      state: state,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Login'),
+          title: Text('Masuk ${state.isPembeli ? "- Pembeli" : ""}'),
           centerTitle: true,
         ),
         body: Center(
@@ -65,7 +67,7 @@ class LoginView extends StatelessWidget {
                       visible: !state.isPembeli,
                       child: PasswordFormField(
                         name: "password",
-                        label: "Password",
+                        label: "Kata Sandi",
                         validator: FormBuilderValidators.compose([
                           if (!state.isPembeli)
                             FormBuilderValidators.required(

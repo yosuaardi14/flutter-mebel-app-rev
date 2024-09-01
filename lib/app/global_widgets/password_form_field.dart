@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_form_field.dart';
@@ -15,20 +17,20 @@ class PasswordFormField extends StatefulWidget {
   final TextEditingController? controller;
   final InputBorder? border;
   final bool required;
-  const PasswordFormField(
-      {Key? key,
-      this.initialValue,
-      this.validator,
-      this.controller,
-      this.inputFormatters,
-      this.isDense = false,
-      this.contentPadding,
-      required this.name,
-      required this.label,
-      this.border,
-      this.readOnly = false,
-      this.required = false})
-      : super(key: key);
+  const PasswordFormField({
+    super.key,
+    this.initialValue,
+    this.validator,
+    this.controller,
+    this.inputFormatters,
+    this.isDense = false,
+    this.contentPadding,
+    required this.name,
+    required this.label,
+    this.border,
+    this.readOnly = false,
+    this.required = false,
+  });
 
   @override
   _PasswordFormFieldState createState() => _PasswordFormFieldState();
@@ -46,25 +48,26 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
   @override
   Widget build(BuildContext context) {
     final child = FormBuilderTextField(
-        name: widget.name,
-        controller: widget.controller,
-        initialValue: widget.initialValue,
-        validator: widget.validator,
-        readOnly: widget.readOnly,
-        inputFormatters: widget.inputFormatters,
-        obscureText: obsecure,
-        decoration: InputDecoration(
-          suffixIcon: IconButton(
-            icon: Icon(
-              obsecure ? Icons.visibility : Icons.visibility_off,
-            ),
-            onPressed: showHide,
+      name: widget.name,
+      controller: widget.controller,
+      initialValue: widget.initialValue,
+      validator: widget.validator,
+      readOnly: widget.readOnly,
+      inputFormatters: widget.inputFormatters,
+      obscureText: obsecure,
+      decoration: InputDecoration(
+        suffixIcon: IconButton(
+          icon: Icon(
+            obsecure ? Icons.visibility : Icons.visibility_off,
           ),
-          contentPadding: widget.contentPadding,
-          border: const OutlineInputBorder(),
-          isDense: widget.isDense,
-          hintText: widget.label,
-        ));
-    return CustomFormField(child: child, required: widget.required);
+          onPressed: showHide,
+        ),
+        contentPadding: widget.contentPadding,
+        border: const OutlineInputBorder(),
+        isDense: widget.isDense,
+        hintText: widget.label,
+      ),
+    );
+    return CustomFormField(required: widget.required, child: child);
   }
 }

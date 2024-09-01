@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/auth_service.dart';
 import 'package:flutter_mebel_app_rev/app/modules/auth/views/login_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/base/controllers/base_controller.dart';
@@ -13,7 +12,7 @@ class LoginController extends BaseController<LoginPage> {
   Widget build(BuildContext context) => LoginView(state: this);
 
   //
-  late final bool isPembeli;
+  bool isPembeli = false;
   final formKey = GlobalKey<FormBuilderState>();
 
   //
@@ -33,16 +32,25 @@ class LoginController extends BaseController<LoginPage> {
   AuthService authService = AuthService();
 
   Future<void> login(String nohp, String pass, bool isPembeli) async {
+    showOverlay.value = true;
     Map<String, dynamic>? user = {};
-    await authService.login(nohp, pass, isPembeli).then((value) async {
+    authService.login(nohp, pass, isPembeli).then((value) async {
       user = value;
       await authService.saveLoginData(user);
-      showInfoDialog("Berhasil", "Login").then((_) {
-        Navigator.pushReplacementNamed(context, Routes.LIST_PESANAN);
-        // Get.offAllNamed(Routes.LIST_PESANAN);
-      });
+      showInfoDialog(
+        title: "Berhasil",
+        content: "Login",
+        onPressed: () =>
+            Navigator.pushReplacementNamed(context, Routes.LIST_PESANAN),
+      );
     }).catchError((e) {
-      showInfoDialog("Gagal", "$e");
-    }).whenComplete(() => log(user.toString()));
+      showInfoDialog(
+        title: "Gagal",
+        content: "$e",
+      );
+    }).whenComplete(() {
+      log(user.toString());
+      showOverlay.value = false;
+    });
   }
 }
