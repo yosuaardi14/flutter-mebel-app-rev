@@ -3,36 +3,19 @@ import 'package:flutter_mebel_app_rev/app/global_widgets/custom_card.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_drawer.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_tab.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/add_bahan_baku/views/add_bahan_baku_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/bindings/detail_bahan_baku_binding.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/views/detail_bahan_baku_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/list_bahan_baku/controllers/list_bahan_baku_controller.dart';
-import 'package:flutter_mebel_app_rev/app/routes/app_pages.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import 'package:get/get.dart';
+class ListBahanBakuPage extends StatefulWidget {
+  const ListBahanBakuPage({super.key});
 
+  @override
+  State<ListBahanBakuPage> createState() => ListBahanBakuController();
+}
 
-class ListBahanBakuView extends GetView<ListBahanBakuController> {
-  const ListBahanBakuView({Key? key}) : super(key: key);
-
-  void onTambahBahanBaku() async {
-    await Get.toNamed(Routes.ADD_BAHAN_BAKU)?.then((_) {
-      controller.listData();
-    });
-  }
-
-  void onDetailBahanBaku(String id) async {
-    await Get.to(() => DetailBahanBakuView(id: id),
-            binding: DetailBahanBakuBinding())
-        ?.then((_) {
-      controller.listData();
-    });
-  }
-
-  void onEditBahanBaku(String id) {
-    Get.to(() => AddBahanBakuView(id: id));
-  }
+class ListBahanBakuView extends StatelessWidget {
+  final ListBahanBakuController state;
+  const ListBahanBakuView({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -45,65 +28,47 @@ class ListBahanBakuView extends GetView<ListBahanBakuController> {
         drawer: const CustomDrawer(no: 1),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
-          onPressed: onTambahBahanBaku,
+          onPressed: state.onTambahBahanBaku,
           child: const Icon(Icons.add),
         ),
         body: SizedBox(
           child: RefreshIndicator(
-            onRefresh: () async {
-              controller.listData();
-            },
+            onRefresh: () async => state.listData(),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                GetBuilder<ListBahanBakuController>(
-                  init: controller,
-                  builder: (val) => Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomTab(
-                        label: "Semua",
-                        color: controller.index.value == 0
-                            ? Colors.red
-                            : Colors.grey,
-                        onTap: () {
-                          controller.index(0);
-                          controller.isAll(true);
-                          controller.listData();
-                        },
-                      ),
-                      CustomTab(
-                        label: "Kosong",
-                        color: controller.index.value == 1
-                            ? Colors.red
-                            : Colors.grey,
-                        onTap: () {
-                          controller.index(1);
-                          controller.isAll(false);
-                          controller.listData();
-                        },
-                      ),
-                    ],
-                  ),
+                ValueListenableBuilder(
+                  valueListenable: state.index,
+                  builder: (context, value, child) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        CustomTab(
+                          label: "Semua",
+                          color: value == 0 ? Colors.red : Colors.grey,
+                          onTap: () => state.onFilterBahanBaku(0),
+                        ),
+                        CustomTab(
+                          label: "Kosong",
+                          color: value == 1 ? Colors.red : Colors.grey,
+                          onTap: () => state.onFilterBahanBaku(1),
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: FormBuilderTextField(
-                    controller: controller.cari,
+                    controller: state.cari,
                     name: "cari",
-                    onChanged: (value) {
-                      controller.searchData();
-                    },
+                    onChanged: state.searchData,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.search),
                       suffixIcon: IconButton(
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          controller.cari.text = "";
-                        },
+                        onPressed: state.clearSearch,
                         icon: const Icon(Icons.close),
                       ),
-                      errorMaxLines: 2,
                       border: const OutlineInputBorder(),
                       isDense: true,
                       hintText: "Cari",
@@ -111,38 +76,70 @@ class ListBahanBakuView extends GetView<ListBahanBakuController> {
                   ),
                 ),
                 Expanded(
-                  flex: 8,
-                  child: GetBuilder<ListBahanBakuController>(
-                    init: controller,
-                    builder: (val) => LoaderWidget(
-                      status: controller.status.value,
-                      child: ListView(
-                        children: controller.cari.text != ""
-                            ? [
-                                ...controller.search!.map(
-                                  (val) => CustomCardBahanBaku(
-                                    bahanBaku: val,
-                                    onTap: () => onDetailBahanBaku(val["id"]),
-                                  ),
-                                )
-                              ]
-                            : [
-                                ...controller.data!.map(
-                                  (val) => CustomCardBahanBaku(
-                                    bahanBaku: val,
-                                    onTap: () => onDetailBahanBaku(val["id"]),
-                                  ),
-                                )
-                              ],
-                      ),
+                  child: LoaderNotifierWidget(
+                    status: state.status,
+                    child: ValueListenableBuilder(
+                      valueListenable: state.cari,
+                      builder: (context, value, child) {
+                        if (value.text.isNotEmpty) {
+                          return listData(state.search);
+                        }
+                        return listData(state.data);
+                      },
                     ),
                   ),
                 ),
+                // Expanded(
+                //   flex: 8,
+                //   child: GetBuilder<ListBahanBakuController>(
+                //     init: controller,
+                //     builder: (val) => LoaderWidget(
+                //       status: controller.status.value,
+                //       child: ListView(
+                //         children: controller.cari.text != ""
+                //             ? [
+                //                 ...controller.search!.map(
+                //                   (val) => CustomCardBahanBaku(
+                //                     bahanBaku: val,
+                //                     onTap: () => onDetailBahanBaku(val["id"]),
+                //                   ),
+                //                 )
+                //               ]
+                //             : [
+                //                 ...controller.data!.map(
+                //                   (val) => CustomCardBahanBaku(
+                //                     bahanBaku: val,
+                //                     onTap: () => onDetailBahanBaku(val["id"]),
+                //                   ),
+                //                 )
+                //               ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget listData(ValueNotifier<List<Map<String, dynamic>>?> valueListenable) {
+    return ValueListenableBuilder(
+      valueListenable: valueListenable,
+      builder: (context, value, child) {
+        return ListView(
+          children: value!
+              .map(
+                (val) => CustomCardBahanBaku(
+                  bahanBaku: val,
+                  onTap: () => state.onDetailBahanBaku(val["id"]),
+                ),
+              )
+              .toList(),
+        );
+      },
     );
   }
 }

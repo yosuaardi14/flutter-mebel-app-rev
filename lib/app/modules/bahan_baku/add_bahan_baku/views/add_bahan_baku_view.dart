@@ -1,185 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
-import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
-import 'package:flutter_mebel_app_rev/app/data/services/currency_input_formatter.dart';
-import 'package:flutter_mebel_app_rev/app/global_widgets/custom_form_field.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/add_bahan_baku/controllers/add_bahan_baku_controller.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/add_bahan_baku/local_widgets/add_bahan_baku_form.dart';
+import 'package:flutter_mebel_app_rev/app/modules/base/views/base_view.dart';
 
-import 'package:get/get.dart';
-
-
-class AddBahanBakuView extends GetView<AddBahanBakuController> {
+class AddBahanBakuPage extends StatefulWidget {
   final String? id;
-  const AddBahanBakuView({Key? key, this.id}) : super(key: key);
+  const AddBahanBakuPage({super.key, this.id});
 
-  static final _formKey = GlobalKey<FormBuilderState>();
+  @override
+  State<AddBahanBakuPage> createState() => AddBahanBakuController();
+}
 
-  void simpan(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      FocusScope.of(context).unfocus();
-      bool hasil = id == null
-          ? await showConfirmationAddDialog(context)
-          : await showConfirmationEditDialog(context);
-      if (hasil) {
-        _formKey.currentState!.save();
-        controller.simpan(id, _formKey.currentState!.value);
-      }
-    }
-  }
+class AddBahanBakuView extends StatelessWidget {
+  final AddBahanBakuController state;
+  const AddBahanBakuView({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    if (id != null && controller.detail!.isEmpty) controller.getData(id!);
-    return GetBuilder<AddBahanBakuController>(
-      init: controller,
-      builder: (AddBahanBakuController val) => Stack(
-        children: [
-          Scaffold(
-            appBar: AppBar(
-              title: Text("${id == null ? 'Tambah' : 'Edit'} Bahan Baku"),
-              centerTitle: true,
-            ),
-            body: Center(
-              child: FormBuilder(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView(
-                    children: val.isLoading.value
-                        ? [
-                            const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          ]
-                        : [
-                            CustomFormField(
-                              required: true,
-                              child: FormBuilderTextField(
-                                name: "nama",
-                                initialValue:
-                                    initValCheck(id, val.detail!["nama"]),
-                                validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(
-                                      errorText: requiredError()),
-                                ]),
-                                decoration: const InputDecoration(
-                                  errorMaxLines: 2,
-                                  border: OutlineInputBorder(),
-                                  isDense: true,
-                                  hintText: "Nama",
-                                ),
-                              ),
-                            ),
-                            CustomFormField(
-                              required: true,
-                              child: FormBuilderTextField(
-                                name: "stok",
-                                initialValue:
-                                    initValCheck(id, val.detail!["stok"]),
-                                valueTransformer: (val) {
-                                  return valToInt(val);
-                                },
-                                enabled: id == null,
-                                keyboardType: TextInputType.number,
-                                validator: FormBuilderValidators.required(
-                                  errorText: requiredError(),
-                                ),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                decoration: const InputDecoration(
-                                  errorMaxLines: 2,
-                                  border: OutlineInputBorder(),
-                                  isDense: true,
-                                  hintText: "Stok",
-                                ),
-                              ),
-                            ),
-                            CustomFormField(
-                              required: true,
-                              child: FormBuilderTextField(
-                                name: "harga",
-                                initialValue:
-                                    initCurrencyCheck(id, val.detail!["harga"]),
-                                // id != null ? val.detail!["harga"] : null,
-                                valueTransformer: (val) {
-                                  return currencyToInt(val);
-                                },
-                                validator: FormBuilderValidators.required(
-                                  errorText: requiredError(),
-                                ),
-                                inputFormatters: [CurrencyInputFormatter()],
-                                enabled: id == null,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                  errorMaxLines: 2,
-                                  border: OutlineInputBorder(),
-                                  isDense: true,
-                                  hintText: "Harga",
-                                  prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 12),
-                                    child: Text('Rp'),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            CustomFormField(
-                              child: FormBuilderTextField(
-                                name: "merk",
-                                initialValue:
-                                    initValCheck(id, val.detail!["merk"]),
-                                valueTransformer: (val) {
-                                  return val ?? "";
-                                },
-                                decoration: const InputDecoration(
-                                  errorMaxLines: 2,
-                                  border: OutlineInputBorder(),
-                                  isDense: true,
-                                  hintText: "Merk",
-                                ),
-                              ),
-                            ),
-                            CustomFormField(
-                              child: FormBuilderTextField(
-                                name: "deskripsi",
-                                initialValue:
-                                    initValCheck(id, val.detail!["deskripsi"]),
-                                valueTransformer: (val) {
-                                  return val ?? "";
-                                },
-                                maxLines: 2,
-                                decoration: const InputDecoration(
-                                  errorMaxLines: 2,
-                                  border: OutlineInputBorder(),
-                                  isDense: true,
-                                  hintText: "Deskripsi",
-                                ),
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                simpan(context);
-                              },
-                              child: const Text("SIMPAN"),
-                            ),
-                          ],
-                  ),
+    if (state.id != null && state.detail.value!.isEmpty) {
+      state.getData();
+    }
+    return BaseView(
+      state: state,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("${state.id == null ? 'Tambah' : 'Edit'} Bahan Baku"),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: FormBuilder(
+            key: state.formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: LoaderBooleanNotifierWidget(
+                isLoading: state.isLoading,
+                child: ValueListenableBuilder(
+                  valueListenable: state.detail,
+                  builder: (context, value, child) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: AddBahanBakuForm(
+                            id: state.id,
+                            detail: value,
+                            state: state,
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: state.simpan,
+                          child: const Text("SIMPAN"),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
           ),
-          // ),
-          if (val.isSaving)
-            const Opacity(
-              opacity: 0.7,
-              child: ModalBarrier(dismissible: false, color: Colors.black),
-            ),
-          if (val.isSaving) const Center(child: CircularProgressIndicator()),
-        ],
+        ),
       ),
     );
   }

@@ -2,42 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_tab.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/detail_card.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/add_bahan_baku/bindings/add_bahan_baku_binding.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/add_bahan_baku/views/add_bahan_baku_view.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/controllers/detail_bahan_baku_controller.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/local_widgets/dialog_add_stok_bahan_baku.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/local_widgets/histori_bahan_baku.dart';
 
-import 'package:get/get.dart';
-
-
-class DetailBahanBakuView extends GetView<DetailBahanBakuController> {
+class DetailBahanBakuPage extends StatefulWidget {
   final String? id;
-  const DetailBahanBakuView({Key? key, this.id}) : super(key: key);
+  const DetailBahanBakuPage({super.key, this.id});
 
-  void onEditBahanBaku(String id) async {
-    await Get.to(() => AddBahanBakuView(id: id), binding: AddBahanBakuBinding())
-        ?.then((_) {
-      controller.getData(id);
-    });
-  }
+  @override
+  State<DetailBahanBakuPage> createState() => DetailBahanBakuController();
+}
 
-  void tambahStokBahanBaku(BuildContext context) async {
-    await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (ctx) => DialogAddStokBahanBaku(bahanBaku: controller.detail!),
-    ).then((_) {
-      controller.getData(id!);
-    });
-  }
-
-  void onDeleteBahanBaku(BuildContext context) async {
-    bool hasil = await showConfirmationDeleteDialog(context);
-    if (hasil) {
-      controller.deleteData(controller.detail!["id"]);
-    }
-  }
+class DetailBahanBakuView extends StatelessWidget {
+  final DetailBahanBakuController state;
+  const DetailBahanBakuView({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -51,70 +30,123 @@ class DetailBahanBakuView extends GetView<DetailBahanBakuController> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: RefreshIndicator(
-              onRefresh: () async => controller.getData(id!),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Expanded(
-                  child: GetBuilder<DetailBahanBakuController>(
-                    init: controller..getData(id!),
-                    builder: (val) => ListView(
-                      children: val.isLoading.value
-                          ? [const Center(child: CircularProgressIndicator())]
-                          : [
+              onRefresh: () async => state.getData(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: LoaderBooleanNotifierWidget(
+                      isLoading: state.isLoading,
+                      child: ValueListenableBuilder(
+                        valueListenable: state.detail,
+                        builder: (context, detail, child) {
+                          return ListView(
+                            children: [
                               DetailCard(
-                                  label: "Nama", value: val.detail!["nama"]),
-                              DetailCard(
-                                  label: "Harga",
-                                  value:
-                                      convertToIdr(val.detail!["harga"] ?? 0)),
-                              DetailCard(
-                                  label: "Stok",
-                                  value: val.detail!["stok"].toString()),
-                              DetailCard(
-                                  label: "Merk", value: val.detail!["merk"]),
-                              DetailCard(
-                                  label: "Deskripsi",
-                                  value: val.detail!["deskripsi"]),
-                              HistoriBahanBaku(
-                                data: controller.historiTambah,
-                                plus: true,
+                                label: "Nama",
+                                value: detail?["nama"],
                               ),
-                              HistoriBahanBaku(
-                                data: controller.historiPengunaan,
-                                plus: false,
+                              DetailCard(
+                                label: "Harga",
+                                value: convertToIdr(detail?["harga"] ?? 0),
+                              ),
+                              DetailCard(
+                                label: "Stok",
+                                value: detail?["stok"].toString(),
+                              ),
+                              DetailCard(
+                                label: "Merk",
+                                value: detail?["merk"],
+                              ),
+                              DetailCard(
+                                label: "Deskripsi",
+                                value: detail?["deskripsi"],
+                              ),
+                              ValueListenableBuilder(
+                                valueListenable: state.historiTambah,
+                                builder: (context, value, child) {
+                                  return HistoriBahanBaku(
+                                    data: value,
+                                    plus: true,
+                                  );
+                                },
+                              ),
+                              ValueListenableBuilder(
+                                valueListenable: state.historiPengunaan,
+                                builder: (context, value, child) {
+                                  return HistoriBahanBaku(
+                                    data: value,
+                                    plus: false,
+                                  );
+                                },
                               ),
                             ],
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                Row(
-                  children: [
-                    CustomTab(
-                      label: "Tambah Stok",
-                      color: Colors.blue,
-                      onTap: () async {
-                        tambahStokBahanBaku(context);
-                      },
-                    )
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    CustomTab(
-                      label: "Ubah",
-                      color: Colors.green,
-                      onTap: () => onEditBahanBaku(controller.detail!["id"]),
-                    ),
-                    CustomTab(
-                      label: "Hapus",
-                      color: Colors.red,
-                      onTap: () async {
-                        onDeleteBahanBaku(context);
-                      },
-                    ),
-                  ],
-                ),
-              ]),
+                  // Expanded(
+                  //   child: GetBuilder<DetailBahanBakuController>(
+                  //     init: controller..getData(id!),
+                  //     builder: (val) => ListView(
+                  //       children: val.isLoading.value
+                  //           ? [const Center(child: CircularProgressIndicator())]
+                  //           : [
+                  //               DetailCard(
+                  //                   label: "Nama", value: val.detail!["nama"]),
+                  //               DetailCard(
+                  //                   label: "Harga",
+                  //                   value:
+                  //                       convertToIdr(val.detail!["harga"] ?? 0)),
+                  //               DetailCard(
+                  //                   label: "Stok",
+                  //                   value: val.detail!["stok"].toString()),
+                  //               DetailCard(
+                  //                   label: "Merk", value: val.detail!["merk"]),
+                  //               DetailCard(
+                  //                   label: "Deskripsi",
+                  //                   value: val.detail!["deskripsi"]),
+                  //               HistoriBahanBaku(
+                  //                 data: controller.historiTambah,
+                  //                 plus: true,
+                  //               ),
+                  //               HistoriBahanBaku(
+                  //                 data: controller.historiPengunaan,
+                  //                 plus: false,
+                  //               ),
+                  //             ],
+                  //     ),
+                  //   ),
+                  // ),
+                  Row(
+                    children: [
+                      CustomTab(
+                        label: "Tambah Stok",
+                        color: Colors.blue,
+                        onTap: () async {
+                          state.tambahStokBahanBaku();
+                        },
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      CustomTab(
+                        label: "Ubah",
+                        color: Colors.green,
+                        onTap: () => state.onEditBahanBaku(state.id!),
+                      ),
+                      CustomTab(
+                        label: "Hapus",
+                        color: Colors.red,
+                        onTap: state.onDeleteBahanBaku,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

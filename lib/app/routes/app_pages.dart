@@ -3,11 +3,8 @@
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/add_aktivitas/views/add_aktivitas_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/aktivitas/list_aktivitas/views/list_aktivitas_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/auth/views/login_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/add_bahan_baku/bindings/add_bahan_baku_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/add_bahan_baku/views/add_bahan_baku_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/bindings/detail_bahan_baku_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/views/detail_bahan_baku_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/list_bahan_baku/bindings/list_bahan_baku_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/list_bahan_baku/views/list_bahan_baku_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/bindings/cek_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/views/cek_pesanan_view.dart';
@@ -50,8 +47,8 @@ class AppPages {
     ),
     GetPage(
       name: Routes.LIST_BAHAN_BAKU,
-      page: () => const ListBahanBakuView(),
-      binding: ListBahanBakuBinding(),
+      page: () => const ListBahanBakuPage(),
+      // binding: ListBahanBakuBinding(),
     ),
     GetPage(
       name: Routes.LIST_USER,
@@ -60,13 +57,13 @@ class AppPages {
     ),
     GetPage(
       name: Routes.DETAIL_BAHAN_BAKU,
-      page: () => const DetailBahanBakuView(),
-      binding: DetailBahanBakuBinding(),
+      page: () => const DetailBahanBakuPage(),
+      // binding: DetailBahanBakuBinding(),
     ),
     GetPage(
       name: Routes.ADD_BAHAN_BAKU,
-      page: () => const AddBahanBakuView(),
-      binding: AddBahanBakuBinding(),
+      page: () => const AddBahanBakuPage(),
+      // binding: AddBahanBakuBinding(),
     ),
     GetPage(
       name: Routes.ADD_USER,

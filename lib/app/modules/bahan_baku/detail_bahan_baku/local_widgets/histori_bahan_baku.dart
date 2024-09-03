@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 
 class HistoriBahanBaku extends StatelessWidget {
-  bool plus;
-  List<dynamic> data;
-  HistoriBahanBaku({Key? key, required this.data, required this.plus})
-      : super(key: key);
+  final bool plus;
+  final List<dynamic> data;
+  const HistoriBahanBaku({super.key, required this.data, required this.plus});
 
   Widget jumlahText(String jumlah) {
     var textJumlah = plus ? "+ $jumlah" : "- $jumlah";
