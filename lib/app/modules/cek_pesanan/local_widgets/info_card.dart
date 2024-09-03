@@ -4,8 +4,7 @@ import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 class InfoCard extends StatelessWidget {
   final String label;
   final String value;
-  const InfoCard({Key? key, required this.label, required this.value})
-      : super(key: key);
+  const InfoCard({super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {

@@ -3,8 +3,8 @@ import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 
 class ProgressPesananCard extends StatelessWidget {
-  dynamic data;
-  ProgressPesananCard({Key? key, required this.data}) : super(key: key);
+  final dynamic data;
+  const ProgressPesananCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +45,8 @@ class ProgressPesananCard extends StatelessWidget {
 }
 
 class ProgressPesananCardNew extends StatelessWidget {
-  dynamic data;
-  ProgressPesananCardNew({Key? key, required this.data}) : super(key: key);
+  final dynamic data;
+  const ProgressPesananCardNew({super.key, required this.data});
 
   Color getTextColor(int persentase) {
     if (persentase == 100) {
@@ -82,7 +82,7 @@ class ProgressPesananCardNew extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          TahapCard(label: "Pekerja: ", value: data["pekerja"]?["nama"]),
+          TahapCard(label: "Pekerja: ", value: data["pekerja"]?["nama"].toString()),
           TahapCard(
               label: "Perkiraan Selesai: ", value: data["perkiraanSelesai"]),
           TahapCard(label: "Tanggal Selesai: ", value: data["tanggalSelesai"]),
@@ -102,11 +102,11 @@ class TahapCard extends StatelessWidget {
   final String? value;
   final MainAxisAlignment mainAxisAlignment;
   const TahapCard({
-    Key? key,
+    super.key,
     this.label,
     this.value,
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

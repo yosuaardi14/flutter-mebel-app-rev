@@ -1,27 +1,43 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/pesanan_service.dart';
-import 'package:get/get.dart';
+import 'package:flutter_mebel_app_rev/app/modules/base/controllers/base_controller.dart';
+import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/views/cek_pesanan_view.dart';
 
-class CekPesananController extends GetxController {
+class CekPesananController extends BaseController<CekPesananPage> {
+  @override
+  Widget build(BuildContext context) => CekPesananView(state: this);
+
   final PesananService service = PesananService();
-  final isLoading = false.obs;
-  Map<String, dynamic>? detail = {};
+  final isLoading = ValueNotifier<bool>(false);
+  final detail = ValueNotifier<Map<String, dynamic>?>({});
 
-  void getData(String id) async {
+  final _formKey = GlobalKey<FormBuilderState>();
+  get formKey => _formKey;
+
+  String? id;
+
+  void onCari() {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      id = _formKey.currentState!.value["id"];
+      getData();
+    }
+  }
+
+  void getData() async {
     log("cek pesanan get data");
-    isLoading(true);
-    detail = {};
-    update();
-    await service
-        .getDetailData(id)
-        .then((value) => detail = value)
-        .whenComplete(() {
-      isLoading(false);
-      update();
+    isLoading.value = true;
+    detail.value = {};
+    service.getDetailData(id!).then((value) {
+      detail.value = value;
     }).catchError((error, stackTrace) {
-      detail = {};
-      update();
+      detail.value = {};
+    }).whenComplete(() {
+      isLoading.value = false;
     });
   }
 }

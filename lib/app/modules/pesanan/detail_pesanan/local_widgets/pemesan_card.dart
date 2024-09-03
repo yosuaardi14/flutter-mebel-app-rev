@@ -6,8 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 class PemesanCard extends StatelessWidget {
   final String title;
   final Map<String, dynamic> data;
-  const PemesanCard({Key? key, required this.title, required this.data})
-      : super(key: key);
+  const PemesanCard({super.key, required this.title, required this.data});
 
   Future<void> launchWa() async {
     var nohp = data["nohp"];

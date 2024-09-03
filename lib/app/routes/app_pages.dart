@@ -6,14 +6,11 @@ import 'package:flutter_mebel_app_rev/app/modules/auth/views/login_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/add_bahan_baku/views/add_bahan_baku_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/views/detail_bahan_baku_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/list_bahan_baku/views/list_bahan_baku_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/bindings/cek_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/views/cek_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/home/views/home_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/bindings/add_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/views/add_pesanan_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/bindings/detail_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/views/detail_pesanan_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/list_pesanan/bindings/list_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/list_pesanan/views/list_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/user/add_user/views/add_user_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/user/detail_user/views/detail_user_view.dart';
@@ -40,8 +37,8 @@ class AppPages {
         ),
         GetPage(
           name: Routes.CEK_PESANAN,
-          page: () => CekPesananView(),
-          binding: CekPesananBinding(),
+          page: () => const CekPesananPage(),
+          // binding: CekPesananBinding(),
         ),
       ],
     ),
@@ -82,13 +79,13 @@ class AppPages {
     ),
     GetPage(
       name: Routes.DETAIL_PESANAN,
-      page: () => const DetailPesananView(),
-      binding: DetailPesananBinding(),
+      page: () => const DetailPesananPage(),
+      // binding: DetailPesananBinding(),
     ),
     GetPage(
       name: Routes.LIST_PESANAN,
-      page: () => const ListPesananView(),
-      binding: ListPesananBinding(),
+      page: () => const ListPesananPage(),
+      // binding: ListPesananBinding(),
     ),
     GetPage(
       name: Routes.ADD_ACTIVITY,

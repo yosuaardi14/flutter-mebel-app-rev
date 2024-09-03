@@ -1,34 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_tab.dart';
-import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/local_widgets/informasi_pesanan_card.dart';
-import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/local_widgets/pemesan_card.dart';
-import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/local_widgets/progress_pesanan_card.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/bindings/add_pesanan_binding.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/views/add_pesanan_view.dart';
+import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/local_widgets/informasi_pesanan_card.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/local_widgets/pemesan_card.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/local_widgets/progress_pesanan_card.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/controllers/detail_pesanan_controller.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/local_widgets/bahan_baku_card.dart';
 
-import 'package:get/get.dart';
-
-
-class DetailPesananView extends GetView<DetailPesananController> {
+class DetailPesananPage extends StatefulWidget {
   final String? id;
-  const DetailPesananView({Key? key, this.id}) : super(key: key);
+  const DetailPesananPage({super.key, this.id});
 
-  void onEditPesanan(String id) async {
-    await Get.to(() => AddPesananView(id: id), binding: AddPesananBinding())
-        ?.then((_) {
-      controller.getData(id);
-    });
-  }
+  @override
+  State<DetailPesananPage> createState() => DetailPesananController();
+}
 
-  void onDeletePesanan(BuildContext context) async {
-    bool hasil = await showConfirmationDeleteDialog(context);
-    if (hasil) {
-      controller.deleteData(controller.detail!["id"]);
-    }
-  }
+class DetailPesananView extends StatelessWidget {
+  final DetailPesananController state;
+  const DetailPesananView({super.key, required this.state});
 
   Widget imageCard(String url) {
     return Card(
@@ -57,15 +47,21 @@ class DetailPesananView extends GetView<DetailPesananController> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: RefreshIndicator(
-              onRefresh: () async => controller.getData(id!),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Expanded(
-                  child: GetBuilder<DetailPesananController>(
-                    init: controller..getData(id!),
-                    builder: (val) => ListView(
-                      children: val.isLoading.value
-                          ? [const Center(child: CircularProgressIndicator())]
-                          : [
+              onRefresh: () async => state.getData(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: LoaderBooleanNotifierWidget(
+                      isLoading: state.isLoading,
+                      child: ValueListenableBuilder(
+                        valueListenable: state.detail,
+                        builder: (context, detail, child) {
+                          if (detail?.isEmpty ?? false) {
+                            return const SizedBox();
+                          }
+                          return ListView(
+                            children: [
                               Card(
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 20.0),
@@ -80,8 +76,7 @@ class DetailPesananView extends GetView<DetailPesananController> {
                                         ),
                                       ),
                                       Expanded(
-                                        child: Text(
-                                            "${val.detail?["id"] ?? ""}",
+                                        child: Text("${detail?["id"] ?? ""}",
                                             maxLines: 4),
                                       ),
                                       TextButton(
@@ -89,7 +84,7 @@ class DetailPesananView extends GetView<DetailPesananController> {
                                         onPressed: () {
                                           copyToClipboard(
                                             label: "ID",
-                                            value: val.detail?["id"],
+                                            value: detail?["id"],
                                           );
                                         },
                                       ),
@@ -98,14 +93,17 @@ class DetailPesananView extends GetView<DetailPesananController> {
                                 ),
                               ),
                               InformasiPesananCard(
-                                  title: "Informasi Pesanan",
-                                  data: val.detail!["info"]),
+                                title: "Informasi Pesanan",
+                                data: detail?["info"],
+                              ),
                               PemesanCard(
-                                  title: "Pemesan",
-                                  data: val.detail!["pemesan"]),
+                                title: "Pemesan",
+                                data: detail?["pemesan"],
+                              ),
                               BahanBakuCard(
-                                  title: "Bahan Baku",
-                                  data: val.detail!["bahanBaku"]),
+                                title: "Bahan Baku",
+                                data: detail?["bahanBaku"],
+                              ),
                               Card(
                                 elevation: 3,
                                 child: Padding(
@@ -120,7 +118,7 @@ class DetailPesananView extends GetView<DetailPesananController> {
                                             fontSize: 20),
                                       ),
                                       const SizedBox(height: 20),
-                                      ...val.detail!["progress"].map(
+                                      ...detail?["progress"].map(
                                         (e) => ProgressPesananCard(data: e),
                                       ),
                                     ],
@@ -133,9 +131,7 @@ class DetailPesananView extends GetView<DetailPesananController> {
                                   padding: const EdgeInsets.all(10.0),
                                   child: Center(
                                     child: Text(
-                                      "${val.detail!["foto"].length == 0
-                                              ? "Belum Ada "
-                                              : ""}Foto",
+                                      "${detail?["foto"].length == 0 ? "Belum Ada " : ""}Foto",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20),
@@ -143,30 +139,31 @@ class DetailPesananView extends GetView<DetailPesananController> {
                                   ),
                                 ),
                               ),
-                              ...val.detail!["foto"].map((e) => imageCard(e)),
+                              ...detail?["foto"].map((e) => imageCard(e)),
                             ],
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    if (!isPembeli())
-                      CustomTab(
-                        label: "Ubah",
-                        color: Colors.green,
-                        onTap: () => onEditPesanan(controller.detail!["id"]),
-                      ),
-                    if (isAdmin())
-                      CustomTab(
-                        label: "Hapus",
-                        color: Colors.red,
-                        onTap: () async {
-                          onDeletePesanan(context);
+                          );
                         },
                       ),
-                  ],
-                ),
-              ]),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      if (!isPembeli())
+                        CustomTab(
+                          label: "Ubah",
+                          color: Colors.green,
+                          onTap: () => state.onEditPesanan(state.id!),
+                        ),
+                      if (isAdmin())
+                        CustomTab(
+                          label: "Hapus",
+                          color: Colors.red,
+                          onTap: state.onDeletePesanan,
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -5,9 +5,12 @@ import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/local_widgets/info
 class InformasiPesananCard extends StatelessWidget {
   final String title;
   final Map<String, dynamic> data;
-  const InformasiPesananCard(
-      {Key? key, required this.title, required this.data})
-      : super(key: key);
+  
+  const InformasiPesananCard({
+    super.key,
+    required this.title,
+    required this.data,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -4,8 +4,7 @@ import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/local_w
 class PemesanCard extends StatelessWidget {
   final String title;
   final Map<String, dynamic> data;
-  const PemesanCard({Key? key, required this.title, required this.data})
-      : super(key: key);
+  const PemesanCard({super.key, required this.title, required this.data});
 
   @override
   Widget build(BuildContext context) {

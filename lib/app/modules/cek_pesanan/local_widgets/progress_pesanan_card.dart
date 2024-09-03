@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 
 class ProgressPesananCard extends StatelessWidget {
-  dynamic data;
-  ProgressPesananCard({Key? key, required this.data}) : super(key: key);
+  final dynamic data;
+  const ProgressPesananCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +53,11 @@ class TahapCard extends StatelessWidget {
   final String? value;
   final MainAxisAlignment mainAxisAlignment;
   const TahapCard({
-    Key? key,
+    super.key,
     this.label,
     this.value,
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
