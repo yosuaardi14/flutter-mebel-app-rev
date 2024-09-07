@@ -8,7 +8,6 @@ import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/detail_bahan_baku/v
 import 'package:flutter_mebel_app_rev/app/modules/bahan_baku/list_bahan_baku/views/list_bahan_baku_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/cek_pesanan/views/cek_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/home/views/home_view.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/bindings/add_pesanan_binding.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/views/add_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/views/detail_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/list_pesanan/views/list_pesanan_view.dart';
@@ -74,8 +73,8 @@ class AppPages {
     ),
     GetPage(
       name: Routes.ADD_PESANAN,
-      page: () => const AddPesananView(),
-      binding: AddPesananBinding(),
+      page: () => const AddPesananPage(),
+      // binding: AddPesananBinding(),
     ),
     GetPage(
       name: Routes.DETAIL_PESANAN,
