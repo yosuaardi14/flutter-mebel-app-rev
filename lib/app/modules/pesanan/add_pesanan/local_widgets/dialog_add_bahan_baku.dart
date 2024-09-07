@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -6,20 +8,18 @@ import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_form_field.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/controllers/add_pesanan_controller.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/controllers/add_pesanan_controller_v2.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:get/get.dart';
 
 class DialogAddBahanBaku extends StatefulWidget {
-  DialogAddBahanBaku({Key? key}) : super(key: key);
+  final AddPesananControllerV2 state;
+  const DialogAddBahanBaku({super.key, required this.state});
 
   @override
   State<DialogAddBahanBaku> createState() => _DialogAddBahanBakuState();
 }
 
 class _DialogAddBahanBakuState extends State<DialogAddBahanBaku> {
-  final controller = Get.find<AddPesananController>();
-
   static final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> selectedBahanBaku = {};
 
@@ -52,7 +52,6 @@ class _DialogAddBahanBakuState extends State<DialogAddBahanBaku> {
 
   @override
   Widget build(BuildContext context) {
-    // controller.getListBahanBaku();
     return AlertDialog(
       title: const Text("Tambah Bahan Baku"),
       content: FormBuilder(
@@ -62,38 +61,41 @@ class _DialogAddBahanBakuState extends State<DialogAddBahanBaku> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                GetBuilder<AddPesananController>(
-                  init: controller..getListBahanBaku(),
-                  builder: (val) => CustomFormField(
-                    required: true,
-                    child: FormBuilderDropdown(
-                      name: "nama",
-                      items: controller.listBahanBaku!.isEmpty
-                          ? []
-                          : [
-                              ...controller.listBahanBaku!.map(
-                                (e) => DropdownMenuItem(
-                                    child: Text(e["nama"]), value: e["id"]),
-                              )
-                            ],
-                      onChanged: (value) {
-                        setState(() {
-                          selectedBahanBaku = controller.listBahanBaku!
-                              .firstWhere((element) => value == element["id"]);
-                          stok = selectedBahanBaku["stok"] +
-                              (controller.oldBahanBaku[value] ?? 0);
-                        });
-                      },
-                      validator: FormBuilderValidators.required(
-                          errorText: requiredError()),
-                      decoration: const InputDecoration(
-                        errorMaxLines: 2,
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                        hintText: "Nama Bahan Baku",
+                ValueListenableBuilder(
+                  valueListenable: widget.state.listBahanBaku,
+                  builder: (context, listBahanBaku, child) {
+                    return CustomFormField(
+                      required: true,
+                      child: FormBuilderDropdown(
+                        name: "nama",
+                        items: [
+                          ...?listBahanBaku?.map(
+                            (e) => DropdownMenuItem(
+                              value: e["id"],
+                              child: Text(e["nama"]),
+                            ),
+                          )
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            selectedBahanBaku = listBahanBaku!.firstWhere(
+                                (element) => value == element["id"]);
+                            stok = selectedBahanBaku["stok"] +
+                                (widget.state.oldBahanBaku[value] ?? 0);
+                          });
+                        },
+                        validator: FormBuilderValidators.required(
+                          errorText: requiredError(),
+                        ),
+                        decoration: const InputDecoration(
+                          errorMaxLines: 2,
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          hintText: "Nama Bahan Baku",
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
                 Text(
                   "Tersedia: $stok",
@@ -104,9 +106,7 @@ class _DialogAddBahanBakuState extends State<DialogAddBahanBaku> {
                   required: true,
                   child: FormBuilderTextField(
                     name: "jumlah",
-                    valueTransformer: (val) {
-                      return valToInt(val);
-                    },
+                    valueTransformer: valToInt,
                     keyboardType: TextInputType.number,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(
@@ -133,7 +133,10 @@ class _DialogAddBahanBakuState extends State<DialogAddBahanBaku> {
             },
             child: const Text("Kembali")),
         const SizedBox(width: 10),
-        TextButton(onPressed: simpan, child: const Text("Tambah")),
+        TextButton(
+          onPressed: simpan,
+          child: const Text("Tambah"),
+        ),
       ],
     );
   }

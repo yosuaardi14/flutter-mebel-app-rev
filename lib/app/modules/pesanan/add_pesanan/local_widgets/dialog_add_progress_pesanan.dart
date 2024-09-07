@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -6,14 +8,14 @@ import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_form_field.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/controllers/add_pesanan_controller.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/controllers/add_pesanan_controller_v2.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class DialogAddProgressPesanan extends StatefulWidget {
-  int? id;
-  DialogAddProgressPesanan({Key? key, this.id}) : super(key: key);
+  final int? id;
+  final AddPesananControllerV2 state;
+  const DialogAddProgressPesanan({super.key, this.id, required this.state});
 
   @override
   State<DialogAddProgressPesanan> createState() =>
@@ -21,14 +23,18 @@ class DialogAddProgressPesanan extends StatefulWidget {
 }
 
 class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
-  final controller = Get.find<AddPesananController>();
   static final _formKey = GlobalKey<FormBuilderState>();
-  Map<String, dynamic> selectedPekerja = {};
-  Map<String, dynamic> selectedExistingAktivitas = {};
+  final selectedPekerja = ValueNotifier<Map<String, dynamic>>({});
+  final selectedExistingAktivitas = ValueNotifier<Map<String, dynamic>>({});
+  // Map<String, dynamic> selectedPekerja = {};
+  // Map<String, dynamic> selectedExistingAktivitas.value = {};
   bool isNew = false;
-  bool panjangVisible = false;
-  bool jumlahVisible = false;
-  String tahap = "all";
+  final panjangVisible = ValueNotifier<bool>(false);
+  final jumlahVisible = ValueNotifier<bool>(false);
+  final tahap = ValueNotifier<String>("all");
+  // bool panjangVisible.value = false;
+  // bool jumlahVisible.value = false;
+  // String tahap = "all";
 
   void simpan() async {
     if (_formKey.currentState!.validate()) {
@@ -39,8 +45,8 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
         hasil["aktivitas"] = _formKey.currentState!.value["aktivitas"];
       } else {
         hasil["aktivitas"] = {
-          "id": selectedExistingAktivitas["id"],
-          "nama": selectedExistingAktivitas["aktivitas"],
+          "id": selectedExistingAktivitas.value["id"],
+          "nama": selectedExistingAktivitas.value["aktivitas"],
         };
 
         //_formKey.currentState!.value["extaktivitas"];
@@ -55,10 +61,10 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
         hasil["waktupengerjaan"] = _formKey.currentState!.value["durasi"];
       }
 
-      if (selectedExistingAktivitas.containsKey("panjang")) {
+      if (selectedExistingAktivitas.value.containsKey("panjang")) {
         hasil["panjang"] = _formKey.currentState!.value["panjang"];
       }
-      if (selectedExistingAktivitas.containsKey("jumlah")) {
+      if (selectedExistingAktivitas.value.containsKey("jumlah")) {
         hasil["jumlah"] = _formKey.currentState!.value["jumlah"];
       }
 
@@ -100,7 +106,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
               //         onPressed: () {
               //           _formKey.currentState!.reset();
               //           setState(() {
-              //             selectedExistingAktivitas = {};
+              //             selectedExistingAktivitas.value = {};
               //             isNew = true;
               //           });
               //         },
@@ -136,30 +142,31 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                           name: "tahap",
                           enabled: isAdmin(), //true,
                           initialValue: initValProgressTahap(
-                              widget.id, controller.progressPesanan),
+                              widget.id, widget.state.progressPesanan),
                           items: const [
                             DropdownMenuItem(
-                                child: Text("Pengukuran"), value: "pengukuran"),
+                                value: "pengukuran", child: Text("Pengukuran")),
                             DropdownMenuItem(
-                                child: Text("Pemotongan"), value: "pemotongan"),
+                                value: "pemotongan", child: Text("Pemotongan")),
                             DropdownMenuItem(
-                                child: Text("Perakitan"), value: "perakitan"),
+                                value: "perakitan", child: Text("Perakitan")),
                             DropdownMenuItem(
-                                child: Text("Pemasangan"), value: "pemasangan"),
+                                value: "pemasangan", child: Text("Pemasangan")),
                           ],
                           onChanged: (val) {
-                            setState(() {
-                              tahap = val;
-                              _formKey.currentState!.fields["extaktivitas"]!
-                                  .reset();
-                              panjangVisible = false;
-                              jumlahVisible = false;
-                              // .didChange("");
-                              if (!isNew) {
-                                controller.getListAktivitas(val);
-                                controller.update();
-                              }
-                            });
+                            // setState(() {
+                            tahap.value = val;
+                            // });
+                            panjangVisible.value = false;
+                            jumlahVisible.value = false;
+                            // .didChange("");
+                            log(isNew.toString());
+                            _formKey.currentState?.fields["extaktivitas"]
+                                ?.reset();
+                            if (!isNew) {
+                              widget.state.getListAktivitas(val);
+                              // widget.state.update();
+                            }
                           },
                           validator: FormBuilderValidators.required(
                               errorText: requiredError()),
@@ -171,44 +178,48 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                           ),
                         ),
                       ),
-                      if (isNew)
-                        CustomFormField(
-                          required: true,
-                          child: FormBuilderTextField(
-                            name: "aktivitas",
-                            initialValue: initValProgress(widget.id,
-                                controller.progressPesanan, "aktivitas"),
-                            valueTransformer: (val) {
-                              return val ?? "";
-                            },
-                            validator: FormBuilderValidators.required(
-                                errorText: requiredError()),
-                            decoration: const InputDecoration(
-                              errorMaxLines: 2,
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                              hintText: "Aktivitas",
-                            ),
-                          ),
-                        ),
-                      if (!isNew)
-                        GetBuilder<AddPesananController>(
-                          init: controller..getListAktivitas(tahap),
-                          builder: (val) => CustomFormField(
+                      // if (isNew)
+                      // CustomFormField(
+                      //   required: true,
+                      //   child: FormBuilderTextField(
+                      //     name: "aktivitas",
+                      //     initialValue: initValProgress(widget.id,
+                      //         widget.state.progressPesanan, "aktivitas"),
+                      //     valueTransformer: (val) {
+                      //       return val ?? "";
+                      //     },
+                      //     validator: FormBuilderValidators.required(
+                      //         errorText: requiredError()),
+                      //     decoration: const InputDecoration(
+                      //       errorMaxLines: 2,
+                      //       border: OutlineInputBorder(),
+                      //       isDense: true,
+                      //       hintText: "Aktivitas",
+                      //     ),
+                      //   ),
+                      // )
+                      // else // TODO
+                      // GetBuilder<AddPesananController>(
+                      //   init: widget.state..getListAktivitas(tahap),
+                      //   builder: (val) =>
+                      ValueListenableBuilder(
+                        valueListenable: widget.state.listAktivitas,
+                        builder: (context, listAktivitas, child) {
+                          // widget.state.getListAktivitas(tahap);
+                          return CustomFormField(
                             required: true,
                             child: FormBuilderDropdown(
                               name: "extaktivitas",
                               enabled: isAdmin(),
-                              initialValue: initValProgress(widget.id,
-                                  controller.progressPesanan, "aktivitas"),
-                              items: controller.listAktivitas!.isEmpty
-                                  ? []
-                                  : [
-                                      ...controller.listAktivitas!.map((e) =>
-                                          DropdownMenuItem(
-                                              child: Text(e["aktivitas"]),
-                                              value: e["id"]))
-                                    ],
+                              initialValue: (listAktivitas?.isNotEmpty ?? false)
+                                  ? initValProgress(widget.id,
+                                      widget.state.progressPesanan, "aktivitas")
+                                  : null,
+                              items: [
+                                ...?listAktivitas?.map((e) => DropdownMenuItem(
+                                    value: e["id"],
+                                    child: Text(e["aktivitas"])))
+                              ],
                               validator: FormBuilderValidators.required(
                                   errorText: requiredError()),
                               decoration: const InputDecoration(
@@ -218,244 +229,273 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                                 hintText: "Aktivitas",
                               ),
                               onChanged: (value) {
-                                log(val.toString());
-                                setState(() {
-                                  panjangVisible = false;
-                                });
-                                setState(() {
-                                  jumlahVisible = false;
-                                });
-                                setState(() {
-                                  selectedExistingAktivitas =
-                                      controller.listAktivitas!.firstWhere(
-                                          (element) => value == element["id"]);
-                                  log(selectedExistingAktivitas.toString());
-                                });
-                                if (selectedExistingAktivitas
+                                // log(val.toString());
+                                // TODO
+                                // setState(() {
+                                panjangVisible.value = false;
+                                // });
+                                // setState(() {
+                                jumlahVisible.value = false;
+                                // });
+                                if (value == null) {
+                                  return;
+                                }
+                                // setState(() {
+                                var temp = listAktivitas?.firstWhere(
+                                    (element) => value == element["id"]);
+                                selectedExistingAktivitas.value = temp ?? {};
+
+                                log(selectedExistingAktivitas.value.toString());
+                                // });
+                                if (selectedExistingAktivitas.value
                                     .containsKey("panjang")) {
-                                  setState(() {
-                                    panjangVisible = true;
-                                  });
-                                  setState(() {
-                                    _formKey.currentState!.fields["panjang"]!
-                                        .didChange(
-                                            selectedExistingAktivitas["panjang"]
-                                                .toString());
-                                    _formKey.currentState!.fields["satuanP"]!
-                                        .didChange("cm");
-                                  });
+                                  // setState(() {
+                                  panjangVisible.value = true;
+                                  // });
+                                  // setState(() {
+                                  _formKey.currentState?.fields["panjang"]
+                                      ?.didChange(selectedExistingAktivitas
+                                          .value["panjang"]
+                                          .toString());
+                                  _formKey.currentState?.fields["satuanP"]
+                                      ?.didChange("cm");
+                                  // });
                                 }
-                                if (selectedExistingAktivitas
+                                if (selectedExistingAktivitas.value
                                     .containsKey("jumlah")) {
-                                  setState(() {
-                                    jumlahVisible = true;
-                                  });
-                                  setState(() {
-                                    _formKey.currentState!.fields["jumlah"]!
-                                        .didChange(
-                                            selectedExistingAktivitas["jumlah"]
-                                                .toString());
-                                  });
+                                  // setState(() {
+                                  jumlahVisible.value = true;
+                                  // });
+                                  // setState(() {
+                                  _formKey.currentState?.fields["jumlah"]
+                                      ?.didChange(selectedExistingAktivitas
+                                          .value["jumlah"]
+                                          .toString());
+                                  // });
                                 }
-                                setState(() {
-                                  _formKey.currentState!.fields["durasi"]!
-                                      .didChange(
-                                          selectedExistingAktivitas["durasi"]
-                                              .toString());
-                                  _formKey.currentState!.fields["waktu"]!
-                                      .didChange("menit");
-                                });
-                                // if (selectedExistingAktivitas
+                                // setState(() {
+                                _formKey.currentState?.fields["durasi"]
+                                    ?.didChange(selectedExistingAktivitas
+                                        .value["durasi"]
+                                        .toString());
+                                _formKey.currentState?.fields["waktu"]
+                                    ?.didChange("menit");
+                                // });
+                                // if (selectedExistingAktivitas.value
                                 //     .containsKey("durasi")) {
 
                                 // }
                               },
                               onSaved: (value) {
-                                setState(() {
-                                  selectedExistingAktivitas =
-                                      controller.listAktivitas!.firstWhere(
-                                          (element) => value == element["id"]);
-                                });
+                                // setState(() {
+                                selectedExistingAktivitas.value = listAktivitas!
+                                    .firstWhere(
+                                        (element) => value == element["id"]);
+                                // });
                               },
                             ),
-                          ),
-                        ),
-                      GetBuilder<AddPesananController>(
-                        init: controller..getListPekerja(),
-                        builder: (val) => CustomFormField(
-                          required: true,
-                          child: FormBuilderDropdown(
-                            name: "pekerja",
-                            enabled: isAdmin(),
-                            initialValue: initValProgress(widget.id,
-                                controller.progressPesanan, "pekerja"),
-                            items: controller.listPekerja!.isEmpty
-                                ? []
-                                : [
-                                    ...controller.listPekerja!.map((e) =>
-                                        DropdownMenuItem(
-                                            child: Text(e["nama"]),
-                                            value: e["id"]))
-                                  ],
-                            validator: FormBuilderValidators.required(
-                                errorText: requiredError()),
-                            decoration: const InputDecoration(
-                              errorMaxLines: 2,
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                              hintText: "Nama Pekerja",
-                            ),
-                            onChanged: (value) {
-                              log(val.toString());
-                              setState(() {
-                                selectedPekerja = controller.listPekerja!
-                                    .firstWhere(
-                                        (element) => value == element["id"]);
-                              });
-                            },
-                            onSaved: (value) {
-                              setState(() {
-                                selectedPekerja = controller.listPekerja!
-                                    .firstWhere(
-                                        (element) => value == element["id"]);
-                              });
-                            },
-                          ),
-                        ),
+                          );
+                        },
                       ),
+                      // ),
+                      // TODO
+                      // GetBuilder<AddPesananController>(
+                      //   init: widget.state..getListPekerja(),
+                      //   builder: (val) =>
+
+                      ValueListenableBuilder(
+                        valueListenable: widget.state.listPekerja,
+                        builder: (context, listPekerja, child) {
+                          return CustomFormField(
+                            required: true,
+                            child: FormBuilderDropdown(
+                              name: "pekerja",
+                              enabled: isAdmin(),
+                              initialValue: (listPekerja?.isNotEmpty ?? false)
+                                  ? initValProgress(widget.id,
+                                      widget.state.progressPesanan, "pekerja")
+                                  : null,
+                              items: [
+                                ...?listPekerja?.map((e) => DropdownMenuItem(
+                                    value: e["id"], child: Text(e["nama"])))
+                              ],
+                              validator: FormBuilderValidators.required(
+                                  errorText: requiredError()),
+                              decoration: const InputDecoration(
+                                errorMaxLines: 2,
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                                hintText: "Nama Pekerja",
+                              ),
+                              onChanged: (value) {
+                                // log(val.toString());
+                                // setState(() {
+                                selectedPekerja.value = listPekerja!.firstWhere(
+                                    (element) => value == element["id"]);
+                                // });
+                              },
+                              onSaved: (value) {
+                                // setState(() {
+                                selectedPekerja.value = listPekerja!.firstWhere(
+                                    (element) => value == element["id"]);
+                                // });
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      // ),
                       // if (panjangVisible)
-                      Visibility(
-                        visible: panjangVisible,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: CustomFormField(
-                                required: true,
-                                child: FormBuilderTextField(
-                                  name: "panjang",
-                                  initialValue: initValProgress(widget.id,
-                                      controller.progressPesanan, "panjang"),
-                                  valueTransformer: (val) {
-                                    return valToInt(val);
-                                  },
-                                  validator: FormBuilderValidators.required(
-                                      errorText: requiredError()),
-                                  decoration: const InputDecoration(
-                                    errorMaxLines: 2,
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                    hintText: "Panjang",
-                                  ),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  keyboardType: TextInputType.number,
-                                  onChanged: (val) {
-                                    if (val != null) {
-                                      int? panjang = int.tryParse(val);
-                                      if (panjang != null) {
-                                        if (_formKey.currentState!
-                                                .fields["satuanP"]!.value ==
-                                            "m") {
-                                          panjang = panjang * 100;
+                      ValueListenableBuilder(
+                        valueListenable: panjangVisible,
+                        builder: (context, value, child) {
+                          return Visibility(
+                            visible: value,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: CustomFormField(
+                                    required: true,
+                                    child: FormBuilderTextField(
+                                      name: "panjang",
+                                      initialValue: initValProgress(
+                                          widget.id,
+                                          widget.state.progressPesanan,
+                                          "panjang"),
+                                      valueTransformer: (val) {
+                                        return valToInt(val);
+                                      },
+                                      validator: FormBuilderValidators.required(
+                                          errorText: requiredError()),
+                                      decoration: const InputDecoration(
+                                        errorMaxLines: 2,
+                                        border: OutlineInputBorder(),
+                                        isDense: true,
+                                        hintText: "Panjang",
+                                      ),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly
+                                      ],
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (val) {
+                                        if (val != null) {
+                                          int? panjang = int.tryParse(val);
+                                          if (panjang != null) {
+                                            if (_formKey.currentState!
+                                                    .fields["satuanP"]!.value ==
+                                                "m") {
+                                              panjang = panjang * 100;
+                                            }
+                                            int durasi =
+                                                ((selectedExistingAktivitas
+                                                                    .value[
+                                                                "durasi"] *
+                                                            panjang) /
+                                                        selectedExistingAktivitas
+                                                            .value["panjang"])
+                                                    .round();
+                                            _formKey
+                                                .currentState?.fields["durasi"]
+                                                ?.didChange(durasi.toString());
+                                          }
+                                        } else {
+                                          _formKey
+                                              .currentState?.fields["durasi"]
+                                              ?.didChange("0");
                                         }
-                                        int durasi =
-                                            ((selectedExistingAktivitas[
-                                                            "durasi"] *
-                                                        panjang) /
-                                                    selectedExistingAktivitas[
-                                                        "panjang"])
-                                                .round();
-                                        _formKey.currentState!.fields["durasi"]!
-                                            .didChange(durasi.toString());
-                                      }
-                                    } else {
-                                      _formKey.currentState!.fields["durasi"]!
-                                          .didChange("0");
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: CustomFormField(
-                                required: true,
-                                child: FormBuilderDropdown(
-                                  name: "satuanP",
-                                  initialValue: initValProgress(widget.id,
-                                      controller.progressPesanan, "satuanP"),
-                                  items: const [
-                                    DropdownMenuItem(
-                                        child: Text("meter"), value: "m"),
-                                    DropdownMenuItem(
-                                        child: Text("cm"), value: "cm"),
-                                  ],
-                                  validator: FormBuilderValidators.required(
-                                      errorText: requiredError()),
-                                  decoration: const InputDecoration(
-                                    errorMaxLines: 2,
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                    hintText: "Satuan",
+                                      },
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Expanded(
+                                  child: CustomFormField(
+                                    required: true,
+                                    child: FormBuilderDropdown(
+                                      name: "satuanP",
+                                      initialValue: initValProgress(
+                                          widget.id,
+                                          widget.state.progressPesanan,
+                                          "satuanP"),
+                                      items: const [
+                                        DropdownMenuItem(
+                                            value: "m", child: Text("meter")),
+                                        DropdownMenuItem(
+                                            value: "cm", child: Text("cm")),
+                                      ],
+                                      validator: FormBuilderValidators.required(
+                                          errorText: requiredError()),
+                                      decoration: const InputDecoration(
+                                        errorMaxLines: 2,
+                                        border: OutlineInputBorder(),
+                                        isDense: true,
+                                        hintText: "Satuan",
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                       // if (jumlahVisible)
-                      Visibility(
-                        visible: jumlahVisible,
-                        child: CustomFormField(
-                          required: true,
-                          child: FormBuilderTextField(
-                            name: "jumlah",
-                            initialValue: initValProgress(widget.id,
-                                controller.progressPesanan, "jumlah"),
-                            valueTransformer: (val) {
-                              return valToInt(val);
-                            },
-                            validator: FormBuilderValidators.required(
-                                errorText: requiredError()),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              errorMaxLines: 2,
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                              hintText: "Jumlah",
+                      ValueListenableBuilder(
+                        valueListenable: jumlahVisible,
+                        builder: (context, value, child) {
+                          return Visibility(
+                            visible: value,
+                            child: CustomFormField(
+                              required: true,
+                              child: FormBuilderTextField(
+                                name: "jumlah",
+                                initialValue: initValProgress(widget.id,
+                                    widget.state.progressPesanan, "jumlah"),
+                                valueTransformer: (val) {
+                                  return valToInt(val);
+                                },
+                                validator: FormBuilderValidators.required(
+                                    errorText: requiredError()),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  errorMaxLines: 2,
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                  hintText: "Jumlah",
+                                ),
+                                onChanged: (val) {
+                                  setState(() {
+                                    if (val != null) {
+                                      int? jumlah = int.tryParse(val);
+                                      if (jumlah != null) {
+                                        int durasi = ((selectedExistingAktivitas
+                                                        .value["durasi"] *
+                                                    jumlah) /
+                                                selectedExistingAktivitas
+                                                    .value["jumlah"])
+                                            .round();
+                                        _formKey.currentState?.fields["durasi"]
+                                            ?.didChange(durasi.toString());
+                                      }
+                                    } else {
+                                      _formKey.currentState?.fields["durasi"]
+                                          ?.didChange("0");
+                                    }
+                                  });
+                                },
+                              ),
                             ),
-                            onChanged: (val) {
-                              setState(() {
-                                if (val != null) {
-                                  int? jumlah = int.tryParse(val);
-                                  if (jumlah != null) {
-                                    int durasi = ((selectedExistingAktivitas[
-                                                    "durasi"] *
-                                                jumlah) /
-                                            selectedExistingAktivitas["jumlah"])
-                                        .round();
-                                    _formKey.currentState!.fields["durasi"]!
-                                        .didChange(durasi.toString());
-                                  }
-                                } else {
-                                  _formKey.currentState!.fields["durasi"]!
-                                      .didChange("0");
-                                }
-                              });
-                            },
-                          ),
-                        ),
+                          );
+                        },
                       ),
                       // CustomFormField(
                       //   required: true,
                       //   child: FormBuilderTextField(
                       //     name: "ukuran",
                       //     initialValue: initValProgress(
-                      //         widget.id, controller.progressPesanan, "ukuran"),
+                      //         widget.id, widget.state.progressPesanan, "ukuran"),
                       //     valueTransformer: (val) {
                       //       return valToInt(val);
                       //     },
@@ -470,7 +510,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //     ),
                       //     onChanged: (value) {
                       //       if (!isNew && value != null) {
-                      //         // String ukuran = selectedExistingAktivitas["ukuran"];
+                      //         // String ukuran = selectedExistingAktivitas.value["ukuran"];
                       //         // RegExp regex = RegExp(r'\d+');
                       //         // var listUkuran = ukuran.split(regex);
                       //         // log(listUkuran[0]);
@@ -478,7 +518,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //             .didChange("10");
                       //         // var satuanUkuran
                       //         // var tempWaktu = waktu;
-                      //         // selectedExistingAktivitas
+                      //         // selectedExistingAktivitas.value
                       //       }
                       //     },
                       //   ),
@@ -492,7 +532,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //           child: FormBuilderTextField(
                       //             name: "panjang",
                       //             initialValue: initValProgress(widget.id,
-                      //                 controller.progressPesanan, "panjang"),
+                      //                 widget.state.progressPesanan, "panjang"),
                       //             valueTransformer: (val) {
                       //               return valToInt(val);
                       //             },
@@ -509,7 +549,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //               if (val != null) {
                       //                 int? panjang = int.tryParse(val);
                       //                 if (panjang != null) {
-                      //                   int durasi = selectedExistingAktivitas[
+                      //                   int durasi = selectedExistingAktivitas.value[
                       //                           "durasi"] *
                       //                       panjang;
                       //                   _formKey.currentState!.fields["durasi"]!
@@ -526,7 +566,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //           child: FormBuilderDropdown(
                       //             name: "satuanP",
                       //             initialValue: initValProgress(widget.id,
-                      //                 controller.progressPesanan, "satuanP"),
+                      //                 widget.state.progressPesanan, "satuanP"),
                       //             // valueTransformer: (val) {
                       //             //   return valToInt(val);
                       //             // },
@@ -549,7 +589,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //             //   if (val != null) {
                       //             //     int? jumlah = int.tryParse(val);
                       //             //     if (jumlah != null) {
-                      //             //       int durasi = selectedExistingAktivitas[
+                      //             //       int durasi = selectedExistingAktivitas.value[
                       //             //               "durasi"] *
                       //             //           jumlah;
                       //             //       _formKey.currentState!.fields["durasi"]!
@@ -571,7 +611,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //           child: FormBuilderTextField(
                       //             name: "lebar",
                       //             initialValue: initValProgress(widget.id,
-                      //                 controller.progressPesanan, "lebar"),
+                      //                 widget.state.progressPesanan, "lebar"),
                       //             valueTransformer: (val) {
                       //               return valToInt(val);
                       //             },
@@ -593,7 +633,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //           child: FormBuilderDropdown(
                       //             name: "satuanL",
                       //             initialValue: initValProgress(widget.id,
-                      //                 controller.progressPesanan, "satuanL"),
+                      //                 widget.state.progressPesanan, "satuanL"),
                       //             // valueTransformer: (val) {
                       //             //   return valToInt(val);
                       //             // },
@@ -628,7 +668,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //           child: FormBuilderTextField(
                       //             name: "tebal",
                       //             initialValue: initValProgress(widget.id,
-                      //                 controller.progressPesanan, "tebal"),
+                      //                 widget.state.progressPesanan, "tebal"),
                       //             valueTransformer: (val) {
                       //               return valToInt(val);
                       //             },
@@ -650,7 +690,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //           child: FormBuilderDropdown(
                       //             name: "satuanT",
                       //             initialValue: initValProgress(widget.id,
-                      //                 controller.progressPesanan, "satuanT"),
+                      //                 widget.state.progressPesanan, "satuanT"),
                       //             // valueTransformer: (val) {
                       //             //   return valToInt(val);
                       //             // },
@@ -685,7 +725,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                                 name: "durasi",
                                 initialValue: initValProgress(
                                     widget.id,
-                                    controller.progressPesanan,
+                                    widget.state.progressPesanan,
                                     "waktupengerjaan"),
                                 valueTransformer: (val) {
                                   return valToInt(val);
@@ -711,17 +751,17 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                               child: FormBuilderDropdown(
                                 name: "waktu",
                                 initialValue: initValProgress(widget.id,
-                                    controller.progressPesanan, "waktu"),
+                                    widget.state.progressPesanan, "waktu"),
                                 // valueTransformer: (val) {
                                 //   return valToInt(val);
                                 // },
                                 items: const [
                                   DropdownMenuItem(
-                                      child: Text("menit"), value: "menit"),
+                                      value: "menit", child: Text("menit")),
                                   DropdownMenuItem(
-                                      child: Text("jam"), value: "jam"),
+                                      value: "jam", child: Text("jam")),
                                   DropdownMenuItem(
-                                      child: Text("hari"), value: "hari"),
+                                      value: "hari", child: Text("hari")),
                                 ],
                                 validator: FormBuilderValidators.required(
                                     errorText: requiredError()),
@@ -741,16 +781,16 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                         child: FormBuilderDropdown(
                           name: "persentase",
                           initialValue: initValProgress(widget.id,
-                              controller.progressPesanan, "persentase"),
+                              widget.state.progressPesanan, "persentase"),
                           valueTransformer: (val) {
                             return valToInt(val);
                           },
                           items: const [
-                            DropdownMenuItem(child: Text("0%"), value: "0"),
-                            DropdownMenuItem(child: Text("25%"), value: "25"),
-                            DropdownMenuItem(child: Text("50%"), value: "50"),
-                            DropdownMenuItem(child: Text("75%"), value: "75"),
-                            DropdownMenuItem(child: Text("100%"), value: "100"),
+                            DropdownMenuItem(value: "0", child: Text("0%")),
+                            DropdownMenuItem(value: "25", child: Text("25%")),
+                            DropdownMenuItem(value: "50", child: Text("50%")),
+                            DropdownMenuItem(value: "75", child: Text("75%")),
+                            DropdownMenuItem(value: "100", child: Text("100%")),
                           ],
                           validator: FormBuilderValidators.required(
                               errorText: requiredError()),
@@ -771,11 +811,11 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                             format: DateFormat("dd-MM-yyyy"),
                             initialValue: initValDateProgressPerkiraanSelesai(
                               widget.id,
-                              controller.progressPesanan,
-                              controller.informasiPesanan["tanggalPesan"],
+                              widget.state.progressPesanan,
+                              widget.state.informasiPesanan["tanggalPesan"],
                             ),
                             //initValDateProgress(widget.id,
-                            //  controller.progressPesanan, "perkiraanSelesai"),
+                            //  widget.state.progressPesanan, "perkiraanSelesai"),
                             inputType: InputType.date,
                             valueTransformer: (val) {
                               if (val != null) {
@@ -800,7 +840,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                             format: DateFormat("dd-MM-yyyy"),
                             name: "tanggalSelesai",
                             initialValue: initValDateProgress(widget.id,
-                                controller.progressPesanan, "tanggalSelesai"),
+                                widget.state.progressPesanan, "tanggalSelesai"),
                             inputType: InputType.date,
                             valueTransformer: (val) {
                               if (val != null) {
@@ -820,8 +860,8 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       CustomFormField(
                         child: FormBuilderTextField(
                           name: "catatan",
-                          initialValue: initValProgress(
-                              widget.id, controller.progressPesanan, "catatan"),
+                          initialValue: initValProgress(widget.id,
+                              widget.state.progressPesanan, "catatan"),
                           valueTransformer: (val) {
                             return val ?? "";
                           },
@@ -841,10 +881,11 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
           )),
       actions: [
         TextButton(
-            onPressed: () {
-              Navigator.pop(context, null);
-            },
-            child: const Text("Kembali")),
+          onPressed: () {
+            Navigator.pop(context, null);
+          },
+          child: const Text("Kembali"),
+        ),
         const SizedBox(width: 10),
         TextButton(onPressed: simpan, child: const Text("Simpan")),
       ],

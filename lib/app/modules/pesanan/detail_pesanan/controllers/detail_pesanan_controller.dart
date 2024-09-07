@@ -7,6 +7,7 @@ import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/pesanan_service.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/user_service.dart';
 import 'package:flutter_mebel_app_rev/app/modules/base/controllers/base_controller.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/views/add_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/views/detail_pesanan_view.dart';
 
 class DetailPesananController extends BaseController<DetailPesananPage> {
@@ -26,12 +27,12 @@ class DetailPesananController extends BaseController<DetailPesananPage> {
   }
 
   void onEditPesanan(String id) async {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => AddPesananPage(id: id),
-    //   ),
-    // ).whenComplete(getData);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddPesananPage(id: id),
+      ),
+    ).whenComplete(getData);
   }
 
   void onDeletePesanan() async {

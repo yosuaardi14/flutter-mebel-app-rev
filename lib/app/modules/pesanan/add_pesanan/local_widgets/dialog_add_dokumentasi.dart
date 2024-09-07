@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DialogAddDokumentasi extends StatelessWidget {
-  const DialogAddDokumentasi({Key? key}) : super(key: key);
+  const DialogAddDokumentasi({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,8 @@ class DialogAddDokumentasi extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context, "camera");
             },
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Icon(Icons.camera_alt),
                 SizedBox(width: 10),
                 Text("Ambil Foto"),
@@ -33,8 +33,8 @@ class DialogAddDokumentasi extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context, "gallery");
             },
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Icon(Icons.image),
                 SizedBox(width: 10),
                 Text("Pilih dari Galeri"),

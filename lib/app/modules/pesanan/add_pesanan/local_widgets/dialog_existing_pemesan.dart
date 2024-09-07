@@ -5,19 +5,18 @@ import 'package:flutter_mebel_app_rev/app/core/utils/global_functions.dart';
 import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/custom_form_field.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/controllers/add_pesanan_controller.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/controllers/add_pesanan_controller_v2.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:get/get.dart';
 
 class DialogExistingPemesan extends StatefulWidget {
-  DialogExistingPemesan({Key? key}) : super(key: key);
+  final AddPesananControllerV2 state;
+  const DialogExistingPemesan({super.key, required this.state});
 
   @override
   State<DialogExistingPemesan> createState() => _DialogExistingPemesanState();
 }
 
 class _DialogExistingPemesanState extends State<DialogExistingPemesan> {
-  final controller = Get.find<AddPesananController>();
   static final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic>? selectedUser;
 
@@ -33,6 +32,7 @@ class _DialogExistingPemesanState extends State<DialogExistingPemesan> {
       bool confirm = await showConfirmationAddDialog(context);
       if (confirm) {
         log(hasil.toString());
+        // ignore: use_build_context_synchronously
         Navigator.pop(context, hasil);
       }
     }
@@ -44,73 +44,73 @@ class _DialogExistingPemesanState extends State<DialogExistingPemesan> {
       title: const Text("Cari Pemesan"),
       content: FormBuilder(
         key: _formKey,
-        child: GetBuilder<AddPesananController>(
-          init: controller..getListUser(),
-          builder: (val) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CustomFormField(
-                required: true,
-                child: FormBuilderDropdown(
-                  name: "nama",
-                  initialValue: null,
-                  items: controller.listUser!.isEmpty
-                      ? []
-                      : [
-                          ...controller.listUser!.map(
-                            (e) => DropdownMenuItem(
-                              child: Text(e["nama"]),
-                              value: e["id"],
-                            ),
-                          )
-                        ],
-                  validator: FormBuilderValidators.required(
-                      errorText: requiredError()),
-                  decoration: const InputDecoration(
-                    errorMaxLines: 2,
-                    border: OutlineInputBorder(),
-                    isDense: true,
-                    hintText: "Nama Pembeli",
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ValueListenableBuilder(
+              valueListenable: widget.state.listUser,
+              builder: (context, listUser, child) {
+                return CustomFormField(
+                  required: true,
+                  child: FormBuilderDropdown(
+                    name: "nama",
+                    initialValue: null,
+                    items: [
+                      ...?listUser?.map(
+                        (e) => DropdownMenuItem(
+                          value: e["id"],
+                          child: Text(e["nama"]),
+                        ),
+                      )
+                    ],
+                    validator: FormBuilderValidators.required(
+                        errorText: requiredError()),
+                    decoration: const InputDecoration(
+                      errorMaxLines: 2,
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                      hintText: "Nama Pembeli",
+                    ),
+                    onChanged: (e) {
+                      setState(() {
+                        selectedUser = listUser!
+                            .firstWhere((element) => element["id"] == e);
+                        log(selectedUser.toString());
+                      });
+                    },
                   ),
-                  onChanged: (e) {
-                    setState(() {
-                      selectedUser = controller.listUser!
-                          .firstWhere((element) => element["id"] == e);
-                      log(selectedUser.toString());
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 15),
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                children: [
-                  const Text("Role: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(selectedUser?["role"] ?? ""),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                children: [
-                  const Text("No HP: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(selectedUser?["nohp"] ?? ""),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                children: [
-                  const Text("Alamat: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(selectedUser?["alamat"] ?? ""),
-                ],
-              ),
-            ],
-          ),
+                );
+              },
+            ),
+            const SizedBox(height: 15),
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              children: [
+                const Text("Role: ",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(selectedUser?["role"] ?? ""),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              children: [
+                const Text("No HP: ",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(selectedUser?["nohp"] ?? ""),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              children: [
+                const Text("Alamat: ",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(selectedUser?["alamat"] ?? ""),
+              ],
+            ),
+          ],
         ),
       ),
       actions: [

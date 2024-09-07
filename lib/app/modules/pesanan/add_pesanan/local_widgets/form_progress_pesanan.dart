@@ -6,15 +6,12 @@ import 'package:flutter_mebel_app_rev/app/core/values/constant.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/aktivitas_service.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/auth_service.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/user_service.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/controllers/add_pesanan_controller.dart';
-import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/local_widgets/dialog_add_progress_pesanan.dart';
-
-import 'package:get/get.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/controllers/add_pesanan_controller_v2.dart';
 
 class FormProgressPesanan extends StatefulWidget {
-  final String? id;
+  final AddPesananControllerV2 state;
 
-  const FormProgressPesanan({Key? key, this.id}) : super(key: key);
+  const FormProgressPesanan({super.key, required this.state});
 
   @override
   State<FormProgressPesanan> createState() => _FormProgressPesananState();
@@ -23,14 +20,14 @@ class FormProgressPesanan extends StatefulWidget {
 class _FormProgressPesananState extends State<FormProgressPesanan> {
   List<Widget> children = [];
   List<Widget> child = [];
-  final controller = Get.find<AddPesananController>();
+  // final controller = Get.find<AddPesananController>();
 
   @override
   void initState() {
     super.initState();
     children.add(
       Visibility(
-        visible: isAdmin(), //&& (controller.progressPesanan.length < 4),
+        visible: isAdmin(), //&& (widget.state.progressPesanan.length < 4),
         child: ElevatedButton(
           onPressed: addProgress,
           child: const Text("TAMBAH"),
@@ -41,43 +38,52 @@ class _FormProgressPesananState extends State<FormProgressPesanan> {
   }
 
   void addProgress() async {
-    Map<String, dynamic>? hasil = await showDialog(
-      context: context,
-      builder: (ctx) => DialogAddProgressPesanan(),
-      barrierDismissible: false,
-    );
-    if (hasil != null) {
-      log(controller.progressPesanan.toString());
-      hasil["pekerja"] = hasil["pekerja"]["id"];
-      hasil["aktivitas"] = hasil["aktivitas"]["id"];
-      int index = controller.progressPesanan
-          .indexWhere((element) => element["aktivitas"] == hasil["aktivitas"]);
-      if (index == -1) {
-        controller.progressPesanan.add(hasil);
-      } else {
-        controller.progressPesanan.removeAt(index);
-        controller.progressPesanan.insert(index, hasil);
-      }
-    }
-    refresh();
+    widget.state.showDialogAddProgress(callback: refresh);
+    // Map<String, dynamic>? hasil = await showDialog(
+    //   context: context,
+    //   builder: (ctx) => DialogAddProgressPesanan(state: widget.state),
+    //   barrierDismissible: false,
+    // );
+    // if (hasil != null) {
+    //   log(widget.state.progressPesanan.toString());
+    //   hasil["pekerja"] = hasil["pekerja"]["id"];
+    //   hasil["aktivitas"] = hasil["aktivitas"]["id"];
+    //   int index = widget.state.progressPesanan
+    //       .indexWhere((element) => element["aktivitas"] == hasil["aktivitas"]);
+    //   if (index == -1) {
+    //     widget.state.progressPesanan.add(hasil);
+    //   } else {
+    //     widget.state.progressPesanan.removeAt(index);
+    //     widget.state.progressPesanan.insert(index, hasil);
+    //   }
+    // }
+    // refresh();
   }
 
   void editProgress(int index) async {
-    Map<String, dynamic>? hasil = await showDialog(
-        context: context,
-        builder: (ctx) => DialogAddProgressPesanan(id: index));
-    if (hasil != null) {
-      hasil["pekerja"] = hasil["pekerja"]["id"];
+    widget.state.showDialogAddProgress(
+      index: index,
+      callback: refresh,
+    );
+    // Map<String, dynamic>? hasil = await showDialog(
+    //   context: context,
+    //   builder: (ctx) => DialogAddProgressPesanan(
+    //     id: index,
+    //     state: widget.state,
+    //   ),
+    // );
+    // if (hasil != null) {
+    //   hasil["pekerja"] = hasil["pekerja"]["id"];
 
-      hasil["aktivitas"] = hasil["aktivitas"]["id"];
-      controller.progressPesanan[index] = hasil;
-    }
-    refresh();
+    //   hasil["aktivitas"] = hasil["aktivitas"]["id"];
+    //   widget.state.progressPesanan[index] = hasil;
+    // }
+    // refresh();
   }
 
   Future<List<Widget>> getList() async {
     List<Widget> child = [];
-    for (var e in controller.progressPesanan) {
+    for (var e in widget.state.progressPesanan) {
       log(e.toString());
       var userService = UserService();
       var temp = <String, dynamic>{};
@@ -103,11 +109,11 @@ class _FormProgressPesananState extends State<FormProgressPesanan> {
   }
 
   void refresh() async {
-    await getList().then((value) => child = value).whenComplete(() {
+    getList().then((value) => child = value).whenComplete(() {
       setState(() {
-        // if (controller.progressPesanan.length == 4) {
+        // if (widget.state.progressPesanan.length == 4) {
         //   children[0] = Visibility(
-        //     visible: isAdmin() && (controller.progressPesanan.length < 4),
+        //     visible: isAdmin() && (widget.state.progressPesanan.length < 4),
         //     child: ElevatedButton(
         //       onPressed: addProgress,
         //       child: const Text("TAMBAH"),
@@ -139,7 +145,7 @@ class _FormProgressPesananState extends State<FormProgressPesanan> {
                       color: Colors.grey,
                     ),
                     onPressed: () async {
-                      int index = controller.progressPesanan.indexWhere(
+                      int index = widget.state.progressPesanan.indexWhere(
                           (element) => element["tahap"] == hasil["tahap"]);
                       editProgress(index);
                     })

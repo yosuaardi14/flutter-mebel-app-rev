@@ -6,6 +6,7 @@ import 'package:flutter_mebel_app_rev/app/data/services/auth_service.dart';
 import 'package:flutter_mebel_app_rev/app/data/services/pesanan_service.dart';
 import 'package:flutter_mebel_app_rev/app/global_widgets/loader_widget.dart';
 import 'package:flutter_mebel_app_rev/app/modules/base/controllers/base_controller.dart';
+import 'package:flutter_mebel_app_rev/app/modules/pesanan/add_pesanan/views/add_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/detail_pesanan/views/detail_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/modules/pesanan/list_pesanan/views/list_pesanan_view.dart';
 import 'package:flutter_mebel_app_rev/app/routes/app_pages.dart';
@@ -43,12 +44,12 @@ class ListPesananController extends BaseController<ListPesananPage> {
   }
 
   void onEditPesanan(String id) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => AddPesananPage(id: id),
-    //   ),
-    // ).whenComplete(listData);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddPesananPage(id: id),
+      ),
+    ).whenComplete(listData);
   }
 
   void clearSearch() {
