@@ -6,9 +6,13 @@ class CustomCardPesanan extends StatelessWidget {
   final Map<String, dynamic> pesanan;
   final void Function()? onTap;
   final void Function()? onEdit;
-  const CustomCardPesanan(
-      {Key? key, required this.pesanan, this.onTap, this.onEdit})
-      : super(key: key);
+
+  const CustomCardPesanan({
+    super.key,
+    required this.pesanan,
+    this.onTap,
+    this.onEdit,
+  });
 
   Color getTextColor(String tanggal) {
     var temp = tanggal.split("-");
@@ -39,17 +43,15 @@ class CustomCardPesanan extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Pesan: ${pesanan["info"]?["tanggalPesan"].toString() ?? ""}"),
+                  Text(
+                      "Pesan: ${pesanan["info"]?["tanggalPesan"].toString() ?? ""}"),
                   selesai
                       ? Text(
-                          "Selesai: ${pesanan["info"]?["tanggalSelesai"].toString() ??
-                                  ""}",
+                          "Selesai: ${pesanan["info"]?["tanggalSelesai"].toString() ?? ""}",
                           style: const TextStyle(color: Colors.green),
                         )
                       : Text(
-                          "Deadline: ${pesanan["info"]?["perkiraanSelesai"]
-                                      .toString() ??
-                                  ""}",
+                          "Deadline: ${pesanan["info"]?["perkiraanSelesai"].toString() ?? ""}",
                           style: TextStyle(
                               color: getTextColor((pesanan["info"]
                                       ?["perkiraanSelesai"])
@@ -72,8 +74,8 @@ class CustomCardUser extends StatelessWidget {
   final Map<String, dynamic> user;
   final void Function()? onTap;
   final void Function()? onEdit;
-  const CustomCardUser({Key? key, required this.user, this.onTap, this.onEdit})
-      : super(key: key);
+  const CustomCardUser(
+      {super.key, required this.user, this.onTap, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +101,13 @@ class CustomCardBahanBaku extends StatelessWidget {
   final Map<String, dynamic> bahanBaku;
   final void Function()? onTap;
   final void Function()? onEdit;
-  const CustomCardBahanBaku(
-      {Key? key, required this.bahanBaku, this.onTap, this.onEdit})
-      : super(key: key);
+
+  const CustomCardBahanBaku({
+    super.key,
+    required this.bahanBaku,
+    this.onTap,
+    this.onEdit,
+  });
 
   Color getTextColor(int stok) {
     if (stok == 0) {
@@ -137,9 +143,13 @@ class CustomCardAktivitas extends StatelessWidget {
   final Map<String, dynamic> aktivitas;
   final void Function()? onTap;
   final void Function()? onEdit;
-  const CustomCardAktivitas(
-      {Key? key, required this.aktivitas, this.onTap, this.onEdit})
-      : super(key: key);
+  
+  const CustomCardAktivitas({
+    super.key,
+    required this.aktivitas,
+    this.onTap,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {

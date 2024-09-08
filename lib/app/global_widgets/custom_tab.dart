@@ -5,8 +5,7 @@ class CustomTab extends StatelessWidget {
   final void Function()? onTap;
   final Color? color;
 
-  const CustomTab({Key? key, required this.label, this.onTap, this.color})
-      : super(key: key);
+  const CustomTab({super.key, required this.label, this.onTap, this.color});
 
   @override
   Widget build(BuildContext context) {

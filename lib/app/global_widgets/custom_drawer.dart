@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 class CustomDrawer extends StatelessWidget {
   final int no;
-  const CustomDrawer({Key? key, required this.no}) : super(key: key);
+  const CustomDrawer({super.key, required this.no});
 
   void toPesanan() {
     if (no != 0) Get.offNamed(Routes.LIST_PESANAN);
@@ -48,14 +48,18 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(AuthService.userData);
+    if (AuthService.userData.isEmpty) {
+      AuthService().loadLoginData();
+    }
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           UserAccountsDrawerHeader(
             currentAccountPicture: const CircleAvatar(
-              child: FlutterLogo(size: 42),
               backgroundColor: Colors.white,
+              child: FlutterLogo(size: 42),
             ),
             accountName: Text("Halo, ${AuthService.userData["nama"]}"),
             accountEmail: Text("${AuthService.userData["nohp"]}"),

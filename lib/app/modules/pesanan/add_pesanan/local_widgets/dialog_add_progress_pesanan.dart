@@ -198,7 +198,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                       //     ),
                       //   ),
                       // )
-                      // else // TODO
+                      // else
                       // GetBuilder<AddPesananController>(
                       //   init: widget.state..getListAktivitas(tahap),
                       //   builder: (val) =>
@@ -230,7 +230,7 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                               ),
                               onChanged: (value) {
                                 // log(val.toString());
-                                // TODO
+
                                 // setState(() {
                                 panjangVisible.value = false;
                                 // });
@@ -298,7 +298,6 @@ class _DialogAddProgressPesananState extends State<DialogAddProgressPesanan> {
                         },
                       ),
                       // ),
-                      // TODO
                       // GetBuilder<AddPesananController>(
                       //   init: widget.state..getListPekerja(),
                       //   builder: (val) =>

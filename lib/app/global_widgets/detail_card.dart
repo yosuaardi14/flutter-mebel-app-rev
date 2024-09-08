@@ -4,11 +4,7 @@ class DetailCard extends StatelessWidget {
   final String? label;
   final String? value;
 
-  const DetailCard({
-    Key? key,
-    this.label,
-    this.value,
-  }) : super(key: key);
+  const DetailCard({super.key, this.label, this.value});
 
   @override
   Widget build(BuildContext context) {
